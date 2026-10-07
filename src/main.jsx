@@ -9,10 +9,12 @@ function App(){
  const[goldPrice,setGoldPrice]=useState(DEFAULTS.goldPrice),[payout,setPayout]=useState(DEFAULTS.payout),[unit,setUnit]=useState(DEFAULTS.weightUnit);
  const[weights,setWeights]=useState(()=>Object.fromEntries(KARATS.map(k=>[k,""]))),[priceState,setPriceState]=useState("loading"),[notice,setNotice]=useState(""),[updatedAt,setUpdatedAt]=useState(null);
  const loadPrice=async()=>{setPriceState("loading");try{const x=await fetchLiveGoldPrice();setGoldPrice(x.price.toFixed(2));setUpdatedAt(new Date());setPriceState("live")}catch{setPriceState("error")}};
- useEffect(()=>{loadPrice()},[]);\n useEffect(()=>{if(priceState!=="live")return;const timer=setTimeout(loadPrice,60000);return()=>clearTimeout(timer)},[priceState,updatedAt]);
+ useEffect(()=>{loadPrice()},[]);
+ useEffect(()=>{if(priceState!=="live")return;const timer=setTimeout(loadPrice,60000);return()=>clearTimeout(timer)},[priceState,updatedAt]);
  const rows=useMemo(()=>KARATS.map(karat=>{const weight=weights[karat]||0,price=goldPrice?unitPrice({goldPrice,payout,karat,unit}):0,total=goldPrice?rowTotal({goldPrice,payout,karat,weight,unit}):0;return{karat,weight,price,total}}),[goldPrice,payout,unit,weights]);
  const active=rows.filter(r=>Number(r.weight)>0),totalWeight=active.reduce((s,r)=>s+Number(r.weight),0),grand=rows.reduce((s,r)=>s+r.total,0);
- const receipt=()=>["OR BULLION USA","GOLD VALUATION RECEIPT",new Date().toLocaleString(),"",`Gold Price: ${money(Number(goldPrice||0))}/ozt`,`Payout: ${payout}%`,`Unit: ${unit.toUpperCase()}`,"",...active.map(r=>`${r.karat}K  ${Number(r.weight).toFixed(3)} ${unit.toUpperCase()}  @ ${money(r.price)}  = ${money(r.total)}`),"",`Total Weight: ${totalWeight.toFixed(3)} ${unit.toUpperCase()}`,`Total Value: ${money(grand)}`].join("\n");
+ const receipt=()=>["OR BULLION USA","GOLD VALUATION RECEIPT",new Date().toLocaleString(),"",`Gold Price: ${money(Number(goldPrice||0))}/ozt`,`Payout: ${payout}%`,`Unit: ${unit.toUpperCase()}`,"",...active.map(r=>`${r.karat}K  ${Number(r.weight).toFixed(3)} ${unit.toUpperCase()}  @ ${money(r.price)}  = ${money(r.total)}`),"",`Total Weight: ${totalWeight.toFixed(3)} ${unit.toUpperCase()}`,`Total Value: ${money(grand)}`].join("
+");
  const copy=async()=>{if(!active.length)return;try{await navigator.clipboard.writeText(receipt());setNotice("Calculation copied")}catch{setNotice("Copy failed")}};
  const share=async()=>{if(!active.length)return;try{if(navigator.share){await navigator.share({title:"OR Bullion USA Receipt",text:receipt()});setNotice("Receipt shared")}else{await navigator.clipboard.writeText(receipt());setNotice("Receipt copied")}}catch(e){if(e?.name!=="AbortError")setNotice("Share failed")}};
  const reset=()=>{setWeights(Object.fromEntries(KARATS.map(k=>[k,""])));setPayout(DEFAULTS.payout);setUnit(DEFAULTS.weightUnit);setNotice("")};
