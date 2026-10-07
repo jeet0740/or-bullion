@@ -1,0 +1,10 @@
+{
+  "name": "OR Bullion",
+  "short_name": "OR Bullion",
+  "description": "Precious metal refinery calculator",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#151515",
+  "orientation": "portrait-primary"
+}
