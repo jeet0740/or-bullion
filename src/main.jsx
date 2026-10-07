@@ -7,9 +7,9 @@ import"./styles/app.css";
 
 function App(){
  const[goldPrice,setGoldPrice]=useState(DEFAULTS.goldPrice),[payout,setPayout]=useState(DEFAULTS.payout),[unit,setUnit]=useState(DEFAULTS.weightUnit);
- const[weights,setWeights]=useState(()=>Object.fromEntries(KARATS.map(k=>[k,""]))),[priceState,setPriceState]=useState("loading"),[notice,setNotice]=useState("");
- const loadPrice=async()=>{setPriceState("loading");try{const x=await fetchLiveGoldPrice();setGoldPrice(x.price.toFixed(2));setPriceState("live")}catch{setPriceState("error")}};
- useEffect(()=>{loadPrice()},[]);
+ const[weights,setWeights]=useState(()=>Object.fromEntries(KARATS.map(k=>[k,""]))),[priceState,setPriceState]=useState("loading"),[notice,setNotice]=useState(""),[updatedAt,setUpdatedAt]=useState(null);
+ const loadPrice=async()=>{setPriceState("loading");try{const x=await fetchLiveGoldPrice();setGoldPrice(x.price.toFixed(2));setUpdatedAt(new Date());setPriceState("live")}catch{setPriceState("error")}};
+ useEffect(()=>{loadPrice()},[]);\n useEffect(()=>{if(priceState!=="live")return;const timer=setTimeout(loadPrice,60000);return()=>clearTimeout(timer)},[priceState,updatedAt]);
  const rows=useMemo(()=>KARATS.map(karat=>{const weight=weights[karat]||0,price=goldPrice?unitPrice({goldPrice,payout,karat,unit}):0,total=goldPrice?rowTotal({goldPrice,payout,karat,weight,unit}):0;return{karat,weight,price,total}}),[goldPrice,payout,unit,weights]);
  const active=rows.filter(r=>Number(r.weight)>0),totalWeight=active.reduce((s,r)=>s+Number(r.weight),0),grand=rows.reduce((s,r)=>s+r.total,0);
  const receipt=()=>["OR BULLION USA","GOLD VALUATION RECEIPT",new Date().toLocaleString(),"",`Gold Price: ${money(Number(goldPrice||0))}/ozt`,`Payout: ${payout}%`,`Unit: ${unit.toUpperCase()}`,"",...active.map(r=>`${r.karat}K  ${Number(r.weight).toFixed(3)} ${unit.toUpperCase()}  @ ${money(r.price)}  = ${money(r.total)}`),"",`Total Weight: ${totalWeight.toFixed(3)} ${unit.toUpperCase()}`,`Total Value: ${money(grand)}`].join("\n");
@@ -21,7 +21,7 @@ function App(){
   <section className="intro"><div className="eyebrow"><i/> GOLD BUYING</div><h1>Metal Calculator</h1><p>Fast buying &amp; valuation calculator</p></section>
   <section className="panel pricePanel">
    <div className="priceGrid">
-    <label><span>Gold Price</span><div className="bigInput"><b>$</b><input inputMode="decimal" value={goldPrice} placeholder="0.00" onChange={e=>{setGoldPrice(e.target.value);setPriceState("manual")}}/></div><small>{priceState==="loading"?"Fetching live price…":priceState==="live"?"Live gold price":"Manual price / live unavailable"}</small></label>
+    <label><span>Gold Price</span><div className="bigInput"><b>$</b><input inputMode="decimal" value={goldPrice} placeholder="0.00" onChange={e=>{setGoldPrice(e.target.value);setPriceState("manual")}}/></div><small>{priceState==="loading"?"Refreshing live price…":priceState==="live"?`● LIVE • Updated ${updatedAt?.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}`:priceState==="manual"?"Manual price • Auto-refresh paused":"Live unavailable • Manual entry enabled"}</small></label>
     <label><span>Payout</span><div className="bigInput"><input inputMode="decimal" value={payout} onChange={e=>setPayout(e.target.value)}/><b>%</b></div></label>
    </div>
    <div className="divider"/>
