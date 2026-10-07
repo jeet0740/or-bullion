@@ -18,7 +18,7 @@ function App(){
  const share=async()=>{if(!active.length)return;try{if(navigator.share){await navigator.share({title:"OR Bullion USA Receipt",text:receipt()});setNotice("Receipt shared")}else{await navigator.clipboard.writeText(receipt());setNotice("Receipt copied")}}catch(e){if(e?.name!=="AbortError")setNotice("Share failed")}};
  const reset=()=>{setWeights(Object.fromEntries(KARATS.map(k=>[k,""])));setPayout(DEFAULTS.payout);setUnit(DEFAULTS.weightUnit);setNotice("")};
  return <main className="app">
-  <header className="brandBanner"><img src="/images/or-bullion-banner.jpg" alt="OR Bullion USA" /></header>
+  <header className="brandBanner"><img src="/images/or-bullion-banner.jpeg" alt="OR Bullion USA" /></header>
   <section className="intro"><div className="eyebrow"><i/> GOLD BUYING</div><h1>Metal Calculator</h1><p>Fast buying &amp; valuation calculator</p></section>
   <section className="panel pricePanel">
    <div className="priceGrid">
