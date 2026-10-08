@@ -5,3 +5,40 @@
 .bottomActions button:nth-child(2){background:linear-gradient(135deg,#3b2a0a,#211706);border-color:#b17b16;color:#f1bd45}
 .bottomActions button:nth-child(3){background:#111820;border-color:#39444d;color:#e8e8e8}
 .bottomActions button:disabled{opacity:.35;cursor:not-allowed}
+
+/* Compact mobile layout matching the original OR Bullion app */
+@media(max-width:480px){
+ .app{padding-bottom:76px}
+ .intro{padding:22px 18px 18px}
+ .intro h1{font-size:34px;margin:10px 0 7px}
+ .intro p{font-size:15px}
+ .eyebrow{font-size:12px;letter-spacing:3px}
+ .panel{margin:0 16px 18px;border-radius:27px}
+ .pricePanel{padding:24px 18px 19px}
+ .priceGrid{gap:12px}
+ .priceGrid label>span,.unitLine>strong{font-size:16px;margin-bottom:10px}
+ .bigInput{height:62px;border-radius:18px}
+ .bigInput input,.bigInput b{font-size:22px}
+ .bigInput input{padding:9px}
+ .bigInput b{padding:0 10px}
+ .divider{margin:20px 0}
+ .unitLine{gap:10px}
+ .unitLine>strong{margin:0;white-space:nowrap}
+ .toggle{width:205px;border-radius:17px}
+ .toggle button{height:48px;border-radius:14px;font-size:16px}
+ .purityTitle{padding:22px 17px 15px}
+ .purityTitle h2{font-size:24px}
+ .purityTitle p{font-size:14px}
+ .purityTitle>span{padding:10px 16px;font-size:11px}
+ .tableHead{height:46px;padding:0 10px;font-size:8px;letter-spacing:1.2px}
+ .metalRow{min-height:72px;padding:9px 10px;gap:7px}
+ .metalRow>strong,.metalRow>b{font-size:14px}
+ .weightBox input{height:51px;border-radius:16px;font-size:17px;padding:0 9px}
+ .summary{margin:13px 12px 13px;padding:18px;border-radius:23px;gap:12px}
+ .summary small{font-size:12px}
+ .summary strong{font-size:19px;margin-top:5px}
+ .summary>div:nth-child(2){padding-left:17px}
+ .bottomActions{gap:9px;margin:-4px 16px 19px}
+ .bottomActions button{min-height:50px;font-size:15px;border-radius:15px}
+ .bottomNav{height:68px}
+}
