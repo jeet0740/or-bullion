@@ -1,11 +1,16 @@
 const GOLD_API_URL = "https://api.gold-api.com/price/XAU";
 
 export async function fetchLiveGoldPrice({ signal } = {}) {
-  const response = await fetch(GOLD_API_URL, {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  if (signal) signal.addEventListener("abort", () => controller.abort(), { once: true });
+  let response;
+  try { response = await fetch(GOLD_API_URL, {
     method: "GET",
     headers: { Accept: "application/json" },
-    signal,
-  });
+    signal: controller.signal,
+    cache: "no-store",
+  }); } finally { clearTimeout(timeout); }
 
   if (!response.ok) {
     throw new Error(`Gold price service returned ${response.status}`);
