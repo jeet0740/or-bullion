@@ -35,11 +35,13 @@ function App(){
   return new Promise(resolve=>canvas.toBlob(resolve,"image/png",1));
  };
  const shareReceipt=async()=>{
+  let stage="generating image";
   if(!active.length){setNotice("Enter a weight first");return}
   try{
    const blob=await makeReceiptImage();
    if(!blob)throw new Error("Receipt image failed");
    if(Capacitor.isNativePlatform()){
+    stage="encoding image";
     const base64=await new Promise((resolve,reject)=>{
      const reader=new FileReader();
      reader.onload=()=>resolve(String(reader.result).split(",")[1]);
@@ -47,7 +49,9 @@ function App(){
      reader.readAsDataURL(blob);
     });
     const name="OR-Bullion-Receipt-"+Date.now()+".png";
+    stage="saving temporary image";
     const saved=await Filesystem.writeFile({path:name,data:base64,directory:Directory.Cache});
+    stage="opening Android share menu";
     await Share.share({title:"OR Bullion USA Receipt",url:saved.uri,dialogTitle:"Share Receipt"});
     setNotice("Receipt ready to share");
     return;
@@ -64,7 +68,8 @@ function App(){
    setNotice("Receipt download requested");
   }catch(e){
    if(e?.name==="AbortError"||String(e?.message||"").toLowerCase().includes("cancel")){setNotice("Share cancelled");return}
-   setNotice("Could not share receipt image");
+   setNotice("Receipt failed at "+stage+": "+String(e?.message||e).slice(0,120));
+   console.error("Receipt share error",stage,e);
   }
  };
   const reset=()=>{setWeights(Object.fromEntries(KARATS.map(k=>[k,""])));setPayout(DEFAULTS.payout);setUnit(DEFAULTS.weightUnit);setNotice("")};
