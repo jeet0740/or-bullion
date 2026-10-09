@@ -1,4 +1,4 @@
-const GOLD_API_URL = "https://xaus.com/api/v1/spot?compact=1";
+const GOLD_API_URL = "https://api.gold-api.com/price/XAU";
 
 export async function fetchLiveGoldPrice({ signal } = {}) {
   const controller = new AbortController();
@@ -15,14 +15,13 @@ export async function fetchLiveGoldPrice({ signal } = {}) {
   } finally {
     clearTimeout(timeout);
   }
-  if (!response.ok) throw new Error(`XAUS returned ${response.status}`);
+  if (!response.ok) throw new Error(`Gold API returned ${response.status}`);
   const data = await response.json();
-  const price = Number(data.spot_usd_oz);
-  if (!Number.isFinite(price) || price <= 0) throw new Error("Invalid XAUS gold price");
-  const updatedAt = data.price_as_of || data.data_state?.as_of || data.updated_at;
-  const timestamp = Date.parse(updatedAt);
-  if (!Number.isFinite(timestamp) || Math.abs(Date.now() - timestamp) > 5 * 60 * 1000 || data.stale || data.data_state?.status !== "fresh") {
-    throw new Error("XAUS gold price is stale");
+  const price = Number(data.price);
+  if (!Number.isFinite(price) || price <= 0) throw new Error("Invalid gold price");
+  const updatedAt = data.updatedAt || data.updated_at;
+  if (!updatedAt || !Number.isFinite(Date.parse(updatedAt))) {
+    throw new Error("Gold API returned no valid quote timestamp");
   }
-  return { price, symbol: "XAU", source: "XAUS spot (indicative)", updatedAt };
+  return { price, symbol: "XAU", source: "Gold-API.com spot", updatedAt };
 }
