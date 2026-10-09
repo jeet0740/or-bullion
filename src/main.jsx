@@ -103,7 +103,7 @@ function App(){
   <div className="bottomActions"><button onClick={copy} disabled={!active.length}>▣ <span>Copy Calculation</span></button><button onClick={shareReceipt} disabled={!active.length}>▤ <span>Share Receipt</span></button><button onClick={reset}>↻ <span>Reset</span></button></div>
   {notice&&<div className="notice">{notice}</div>}
   <footer>OR BULLION USA&nbsp; • &nbsp;Gold valuation tool</footer>
-  <nav className="bottomNav"><span>▦</span><b>Calculator</b></nav>
+  {!Capacitor.isNativePlatform()&&<nav className="bottomNav"><span>▦</span><b>Calculator</b></nav>}
  </main>
 }
 createRoot(document.getElementById("root")).render(<React.StrictMode><App/></React.StrictMode>);
