@@ -1,3 +1,6 @@
+import { Capacitor } from "@capacitor/core";
+import { Filesystem, Directory } from "@capacitor/filesystem";
+import { Share } from "@capacitor/share";
 import React,{useEffect,useMemo,useRef,useState}from"react";
 import{createRoot}from"react-dom/client";
 import{DEFAULTS,KARATS}from"./config/karats.js";
@@ -31,7 +34,39 @@ function App(){
   ctx.textAlign="left";ctx.fillStyle="#667085";ctx.font="700 20px Arial";ctx.fillText("Date & Time",65,sy+185);ctx.fillStyle="#171b24";ctx.font="700 25px Arial";ctx.fillText(new Date().toLocaleString(),65,sy+222);ctx.textAlign="right";ctx.fillStyle="#b27a0b";ctx.font="italic 42px Georgia";ctx.fillText("Thank You",1000,sy+205);ctx.fillStyle="#171b24";ctx.font="700 17px Arial";ctx.fillText("O R  B U L L I O N  U S A",1000,sy+235);
   return new Promise(resolve=>canvas.toBlob(resolve,"image/png",1));
  };
- const shareReceipt=async()=>{if(!active.length){setNotice("Enter a weight first");return}try{const blob=await makeReceiptImage();if(!blob)throw new Error("Receipt image failed");const file=new File([blob],"OR-Bullion-Receipt.png",{type:"image/png"});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({title:"OR Bullion USA Receipt",files:[file]});setNotice("Receipt shared");return}const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="OR-Bullion-Receipt.png";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setNotice("Receipt image saved — share it from your device")}catch(e){if(e?.name==="AbortError"){setNotice("Share cancelled");return}setNotice("Could not create receipt image")}};
+ const shareReceipt=async()=>{
+  if(!active.length){setNotice("Enter a weight first");return}
+  try{
+   const blob=await makeReceiptImage();
+   if(!blob)throw new Error("Receipt image failed");
+   if(Capacitor.isNativePlatform()){
+    const base64=await new Promise((resolve,reject)=>{
+     const reader=new FileReader();
+     reader.onload=()=>resolve(String(reader.result).split(",")[1]);
+     reader.onerror=()=>reject(new Error("Unable to read receipt image"));
+     reader.readAsDataURL(blob);
+    });
+    const name="OR-Bullion-Receipt-"+Date.now()+".png";
+    const saved=await Filesystem.writeFile({path:name,data:base64,directory:Directory.Cache});
+    await Share.share({title:"OR Bullion USA Receipt",url:saved.uri,dialogTitle:"Share Receipt"});
+    setNotice("Receipt ready to share");
+    return;
+   }
+   const file=new File([blob],"OR-Bullion-Receipt.png",{type:"image/png"});
+   if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
+    await navigator.share({title:"OR Bullion USA Receipt",files:[file]});
+    setNotice("Receipt shared");
+    return;
+   }
+   const url=URL.createObjectURL(blob),a=document.createElement("a");
+   a.href=url;a.download="OR-Bullion-Receipt.png";a.click();
+   setTimeout(()=>URL.revokeObjectURL(url),1000);
+   setNotice("Receipt download requested");
+  }catch(e){
+   if(e?.name==="AbortError"||String(e?.message||"").toLowerCase().includes("cancel")){setNotice("Share cancelled");return}
+   setNotice("Could not share receipt image");
+  }
+ };
   const reset=()=>{setWeights(Object.fromEntries(KARATS.map(k=>[k,""])));setPayout(DEFAULTS.payout);setUnit(DEFAULTS.weightUnit);setNotice("")};
  return <main className="app">
   <header className="brandBanner"><img src="/images/or-bullion-banner.jpeg" alt="OR Bullion USA" /></header>
