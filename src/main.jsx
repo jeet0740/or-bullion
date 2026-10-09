@@ -1,4 +1,4 @@
-import React,{useEffect,useMemo,useState}from"react";
+import React,{useEffect,useMemo,useRef,useState}from"react";
 import{createRoot}from"react-dom/client";
 import{DEFAULTS,KARATS}from"./config/karats.js";
 import{money,rowTotal,unitPrice}from"./calculations/gold.js";
@@ -8,9 +8,10 @@ import"./styles/app.css";
 function App(){
  const[goldPrice,setGoldPrice]=useState(DEFAULTS.goldPrice),[payout,setPayout]=useState(DEFAULTS.payout),[unit,setUnit]=useState(DEFAULTS.weightUnit);
  const[weights,setWeights]=useState(()=>Object.fromEntries(KARATS.map(k=>[k,""]))),[priceState,setPriceState]=useState("loading"),[notice,setNotice]=useState(""),[updatedAt,setUpdatedAt]=useState(null);
- const loadPrice=async()=>{setPriceState("loading");try{const x=await fetchLiveGoldPrice();setGoldPrice(x.price.toFixed(2));setUpdatedAt(new Date());setPriceState("live")}catch{setPriceState("error")}};
- useEffect(()=>{loadPrice()},[]);
- useEffect(()=>{if(priceState!=="live")return;const timer=setTimeout(loadPrice,60000);return()=>clearTimeout(timer)},[priceState,updatedAt]);
+ const modeRef=useRef("live"),requestRef=useRef(0),busyRef=useRef(false);
+ const loadPrice=async()=>{if(modeRef.current!=="live"||busyRef.current)return;busyRef.current=true;const request=++requestRef.current;try{const x=await fetchLiveGoldPrice();if(modeRef.current!=="live"||request!==requestRef.current)return;setGoldPrice(x.price.toFixed(2));setUpdatedAt(new Date(x.updatedAt));setPriceState("live")}catch{if(modeRef.current==="live")setPriceState("error")}finally{busyRef.current=false}};
+ useEffect(()=>{loadPrice();const timer=setInterval(()=>{if(document.visibilityState==="visible")loadPrice()},60000);const resume=()=>{if(document.visibilityState==="visible")loadPrice()};document.addEventListener("visibilitychange",resume);window.addEventListener("focus",resume);return()=>{clearInterval(timer);document.removeEventListener("visibilitychange",resume);window.removeEventListener("focus",resume)}},[]);
+ const refreshPrice=()=>{modeRef.current="live";requestRef.current++;setPriceState("loading");loadPrice()};
  const rows=useMemo(()=>KARATS.map(karat=>{const weight=weights[karat]||0,price=goldPrice?unitPrice({goldPrice,payout,karat,unit}):0,total=goldPrice?rowTotal({goldPrice,payout,karat,weight,unit}):0;return{karat,weight,price,total}}),[goldPrice,payout,unit,weights]);
  const active=rows.filter(r=>Number(r.weight)>0),totalWeight=active.reduce((s,r)=>s+Number(r.weight),0),grand=rows.reduce((s,r)=>s+r.total,0);
  const receipt=()=>{const unitLabel=unit==="gram"?"g":"DWT";return ["OR BULLION USA","Gold Valuation Receipt","────────────────────",new Date().toLocaleString(),"",`Gold Spot: ${money(Number(goldPrice||0))} / oz`,`Payout: ${payout}%`,`Weight Unit: ${unit==="gram"?"Grams":"DWT"}`,"","ITEMS",...active.flatMap(r=>[`${r.karat}K Gold`,`  Weight: ${Number(r.weight).toFixed(3)} ${unitLabel}`,`  Rate:   ${money(r.price)} / ${unitLabel}`,`  Value:  ${money(r.total)}`]),"","────────────────────",`TOTAL WEIGHT: ${totalWeight.toFixed(3)} ${unitLabel}`,`TOTAL VALUE:  ${money(grand)}`,"────────────────────","OR Bullion USA"].join("\n")};
@@ -37,12 +38,12 @@ function App(){
   <section className="intro"><div className="eyebrow"><i/> GOLD BUYING</div><h1>Metal Calculator</h1><p>Fast buying &amp; valuation calculator</p></section>
   <section className="panel pricePanel">
    <div className="priceGrid">
-    <label><span>Gold Price</span><div className="bigInput"><b>$</b><input inputMode="decimal" value={goldPrice} placeholder="0.00" onChange={e=>{setGoldPrice(e.target.value);setPriceState("manual")}}/></div><small>{priceState==="loading"?"Refreshing live price…":priceState==="live"?`● LIVE • Updated ${updatedAt?.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}`:priceState==="manual"?"Manual price • Auto-refresh paused":"Live unavailable • Manual entry enabled"}</small></label>
+    <label><span>Gold Price</span><div className="bigInput"><b>$</b><input inputMode="decimal" value={goldPrice} placeholder="0.00" onChange={e=>{modeRef.current="manual";requestRef.current++;setGoldPrice(e.target.value);setPriceState("manual")}}/></div><small>{priceState==="loading"?"Refreshing live price…":priceState==="live"?`● LIVE • Updated ${updatedAt?.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}`:priceState==="manual"?"Manual price • Auto-refresh paused":"Live unavailable • Manual entry enabled"}</small></label>
     <label><span>Payout</span><div className="bigInput"><input inputMode="decimal" value={payout} onChange={e=>setPayout(e.target.value)}/><b>%</b></div></label>
    </div>
    <div className="divider"/>
    <div className="unitLine"><strong>Weight Unit</strong><div className="toggle"><button className={unit==="dwt"?"on":""} onClick={()=>setUnit("dwt")}>DWT</button><button className={unit==="gram"?"on":""} onClick={()=>setUnit("gram")}>Grams</button></div></div>
-   <button className="refresh" onClick={loadPrice} disabled={priceState==="loading"}>↻</button>
+   <button className="refresh" onClick={refreshPrice} disabled={false}>↻</button>
   </section>
   <section className="panel purityPanel">
    <div className="purityTitle"><div><h2>Gold by Purity</h2><p>Enter gross weight for each karat.</p></div><span>{unit}</span></div>
