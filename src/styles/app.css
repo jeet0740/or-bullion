@@ -42,3 +42,37 @@
  .bottomActions button{min-height:50px;font-size:15px;border-radius:15px}
  .bottomNav{height:68px}
 }
+
+/* Standalone live quote and denser mobile calculator */
+.liveSpot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 20px 0;padding:16px 18px;background:#0d151c;border:1px solid #354957;border-radius:24px}
+.liveSpotMain{min-width:0;flex:1}
+.liveSpotLabel{display:flex;align-items:center;gap:7px;font-size:14px;white-space:nowrap}
+.liveSpotLabel strong{color:#33cf50}
+.liveSpotLabel strong.notLive{color:#aeb7be}
+.liveSpotLabel b{color:#f2f4f5}
+.liveLight{display:inline-block;flex-shrink:0;width:11px;height:11px;border-radius:50%;background:#27db47;box-shadow:0 0 11px #25dd59}
+.liveLight.inactive{background:#899198;box-shadow:none}
+.liveSpotValue{margin-top:5px;color:#f0b93f;font-weight:900;font-size:29px;letter-spacing:-.5px;white-space:nowrap}
+.liveSpotValue small{color:#aab0b8;font-size:12px;letter-spacing:0}
+.liveSpotSide{border-left:1px solid #394650;padding-left:14px;display:flex;align-items:center;gap:8px;color:#adb3bc;font-size:12px;white-space:nowrap}
+.liveSpotSide button{background:none;border:0;color:#e7a817;font-size:32px;line-height:1;cursor:pointer;padding:4px}
+@media(max-width:480px){
+ .liveSpot{margin:10px 14px 0;padding:12px 12px;border-radius:19px;gap:6px}
+ .liveSpotLabel{font-size:11px;gap:5px}
+ .liveLight{width:9px;height:9px}
+ .liveSpotValue{font-size:24px}
+ .liveSpotValue small{font-size:10px}
+ .liveSpotSide{font-size:10px;gap:3px;padding-left:8px}
+ .liveSpotSide button{font-size:26px}
+ .intro{padding:15px 18px 10px}
+ .intro h1{font-size:30px;margin:6px 0 0}
+ .pricePanel{padding:15px 16px 14px}
+ .priceGrid label>span{font-size:14px;margin-bottom:7px}
+ .bigInput{height:53px;border-radius:15px}
+ .bigInput input,.bigInput b{font-size:20px}
+ .divider{margin:13px 0}
+ .toggle button{height:40px;font-size:14px}
+ .panel{margin-bottom:13px}
+ .metalRow{min-height:65px;padding:6px 10px}
+ .weightBox input{height:46px}
+}
