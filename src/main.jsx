@@ -7,9 +7,9 @@ import"./styles/app.css";
 
 function App(){
  const[goldPrice,setGoldPrice]=useState(""),[payout,setPayout]=useState(DEFAULTS.payout),[unit,setUnit]=useState(DEFAULTS.weightUnit);
- const[livePrice,setLivePrice]=useState(null),[weights,setWeights]=useState(()=>Object.fromEntries(KARATS.map(k=>[k,""]))),[priceState,setPriceState]=useState("loading"),[notice,setNotice]=useState(""),[updatedAt,setUpdatedAt]=useState(null);
+ const[livePrice,setLivePrice]=useState(null),[liveSource,setLiveSource]=useState(""),[weights,setWeights]=useState(()=>Object.fromEntries(KARATS.map(k=>[k,""]))),[priceState,setPriceState]=useState("loading"),[notice,setNotice]=useState(""),[updatedAt,setUpdatedAt]=useState(null);
  const requestRef=useRef(0),busyRef=useRef(false);
- const loadPrice=async()=>{if(busyRef.current)return;busyRef.current=true;const request=++requestRef.current;try{const x=await fetchLiveGoldPrice();if(request!==requestRef.current)return;setLivePrice(x.price);setUpdatedAt(new Date(x.updatedAt));setPriceState("live")}catch{setPriceState("error")}finally{busyRef.current=false}};
+ const loadPrice=async()=>{if(busyRef.current)return;busyRef.current=true;const request=++requestRef.current;try{const x=await fetchLiveGoldPrice();if(request!==requestRef.current)return;setLivePrice(x.price);setLiveSource(x.source);setUpdatedAt(new Date(x.updatedAt));setPriceState("live")}catch{setLivePrice(null);setLiveSource("");setUpdatedAt(null);setPriceState("error")}finally{busyRef.current=false}};
  useEffect(()=>{loadPrice();const timer=setInterval(()=>{if(document.visibilityState==="visible")loadPrice()},30000);const resume=()=>{if(document.visibilityState==="visible")loadPrice()};document.addEventListener("visibilitychange",resume);window.addEventListener("focus",resume);return()=>{clearInterval(timer);document.removeEventListener("visibilitychange",resume);window.removeEventListener("focus",resume)}},[]);
  const refreshPrice=()=>{setPriceState("loading");loadPrice()};
  const rows=useMemo(()=>KARATS.map(karat=>{const weight=weights[karat]||0,price=goldPrice?unitPrice({goldPrice,payout,karat,unit}):0,total=goldPrice?rowTotal({goldPrice,payout,karat,weight,unit}):0;return{karat,weight,price,total}}),[goldPrice,payout,unit,weights]);
@@ -36,8 +36,8 @@ function App(){
  return <main className="app">
   <header className="brandBanner"><img src="/images/or-bullion-banner.jpeg" alt="OR Bullion USA" /></header>
   <section className="liveSpot" aria-live="polite">
-   <div className="liveSpotMain"><div className="liveSpotLabel"><i className={priceState==="live"?"liveLight":"liveLight inactive"}/><strong className={priceState==="live"?"":"notLive"}>{priceState==="live"?"LIVE":"GOLD"}</strong><b> GOLD PRICE</b></div><div className="liveSpotValue">{livePrice!==null?money(livePrice):"—"} <small>USD/oz</small></div></div>
-   <div className="liveSpotSide"><span>{priceState==="loading"?"Refreshing…":priceState==="error"?"Quote unavailable":updatedAt?"Updated "+updatedAt.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Waiting for quote"}</span><button type="button" aria-label="Refresh live gold price" onClick={refreshPrice}>↻</button></div>
+   <div className="liveSpotMain"><div className="liveSpotLabel"><i className={priceState==="live"?"liveLight":"liveLight inactive"}/><strong className={priceState==="live"?"":"notLive"}>{priceState==="live"?"LIVE":"GOLD"}</strong><b> GOLD PRICE</b></div><div className="liveSpotValue">{priceState==="live"&&livePrice!==null?money(livePrice):"Price unavailable"} <small>USD/oz</small></div></div>
+   <div className="liveSpotSide"><span>{priceState==="loading"?"Refreshing…":priceState==="error"?"Both sources unavailable":updatedAt?(liveSource+" · "+updatedAt.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})):"Waiting for quote"}</span><button type="button" aria-label="Refresh live gold price" onClick={refreshPrice}>↻</button></div>
   </section>
   <section className="intro"><div className="eyebrow"><i/> GOLD BUYING</div><h1>Metal Calculator</h1></section>
   <section className="panel pricePanel">
