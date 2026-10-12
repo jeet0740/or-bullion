@@ -17,12 +17,13 @@ export async function fetchLiveGoldPrice({ signal } = {}) {
     });
     if (!response.ok) throw new Error(`Gold-API returned ${response.status}`);
     const data = await response.json();
-    const price = Number(data.price);
+    const rawPrice = Number(data.price);
+    const price = Math.round((rawPrice - 2) * 100) / 100;
     const updatedAt = data.updatedAt || data.updated_at;
     if (!Number.isFinite(price) || price <= 0 || !updatedAt || !Number.isFinite(Date.parse(updatedAt))) {
       throw new Error("Gold-API returned an invalid quote");
     }
-    return { price, symbol: "XAU", source: "Gold-API.com", updatedAt };
+    return { price, symbol: "XAU", source: "Gold-API.com − $2 adjustment", updatedAt };
   } finally {
     clearTimeout(timeout);
     if (signal) signal.removeEventListener("abort", onAbort);
