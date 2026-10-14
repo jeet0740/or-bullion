@@ -76,3 +76,19 @@
  .metalRow{min-height:65px;padding:6px 10px}
  .weightBox input{height:46px}
 }
+
+/* Build 10: respect Dynamic Island, preserve original controls, fixed results/actions */
+:root{--fixed-footer-height:214px}
+.app{padding-top:env(safe-area-inset-top, 0px);padding-bottom:calc(var(--fixed-footer-height) + env(safe-area-inset-bottom, 0px))}
+.brandBanner{max-height:160px}
+.brandBanner img{width:100%;height:auto}
+.fixedBottom{position:fixed;z-index:30;bottom:0;left:50%;transform:translateX(-50%);width:min(620px,100%);background:#080c10;border-top:1px solid #493615;padding:8px 14px calc(10px + env(safe-area-inset-bottom, 0px));box-shadow:0 -8px 24px #000a}
+.fixedBottom .summary{margin:0 0 9px;padding:11px 15px;border-radius:16px;gap:10px}
+.fixedBottom .summary small{font-size:11px}
+.fixedBottom .summary strong{font-size:19px;margin-top:3px}
+.fixedBottom .bottomActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0}
+.fixedBottom .bottomActions button{min-height:40px;font-size:12px;border-radius:11px;padding:5px 6px;gap:5px}
+.fixedBottom .bottomActions button:nth-child(3){grid-column:1/-1;min-height:37px}
+.purityPanel{margin-bottom:12px}
+@media(max-width:480px){.app{padding-bottom:calc(var(--fixed-footer-height) + env(safe-area-inset-bottom, 0px))}.brandBanner{max-height:135px}.fixedBottom .summary strong{font-size:17px}}
+@media(max-height:750px){.brandBanner{max-height:115px}.intro{padding-top:10px}.fixedBottom .summary{padding:8px 12px}}
