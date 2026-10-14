@@ -13,9 +13,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Select Xcode 26
+      - name: Select Xcode 26 or newer
         run: |
-          sudo xcode-select -s /Applications/Xcode_26.app/Contents/Developer
+          set -euo pipefail
+
+          echo "Available Xcode installations:"
+          ls -d /Applications/Xcode*.app || true
+
+          XCODE_PATH=$(find /Applications -maxdepth 1 \
+            -type d -name 'Xcode_26*.app' \
+            | sort -V | tail -n 1)
+
+          if [[ -z "$XCODE_PATH" ]]; then
+            echo "ERROR: Xcode 26 or newer is not installed."
+            echo "A different macOS runner image is required."
+            exit 1
+          fi
+
+          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
 
@@ -76,9 +92,14 @@ jobs:
 
           security cms -D -i "$PROFILE_PATH" > "$RUNNER_TEMP/profile.plist"
 
-          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print UUID' "$RUNNER_TEMP/profile.plist")
-          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print Name' "$RUNNER_TEMP/profile.plist")
-          TEAM_ID=$(/usr/libexec/PlistBuddy -c 'Print TeamIdentifier:0' "$RUNNER_TEMP/profile.plist")
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy \
+            -c 'Print UUID' "$RUNNER_TEMP/profile.plist")
+
+          PROFILE_NAME=$(/usr/libexec/PlistBuddy \
+            -c 'Print Name' "$RUNNER_TEMP/profile.plist")
+
+          TEAM_ID=$(/usr/libexec/PlistBuddy \
+            -c 'Print TeamIdentifier:0' "$RUNNER_TEMP/profile.plist")
 
           mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
 
@@ -188,7 +209,8 @@ jobs:
           printf '%s\n' "$APPSTORE_PRIVATE_KEY" > "$KEY_PATH"
           chmod 600 "$KEY_PATH"
 
-          IPA_PATH=$(find "$RUNNER_TEMP/ipa" -maxdepth 1 -name '*.ipa' -print -quit)
+          IPA_PATH=$(find "$RUNNER_TEMP/ipa" \
+            -maxdepth 1 -name '*.ipa' -print -quit)
 
           test -n "$IPA_PATH"
 
