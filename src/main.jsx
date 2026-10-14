@@ -79,17 +79,15 @@ function App(){
    <div className="liveSpotMain"><div className="liveSpotLabel"><i className={priceState==="live"?"liveLight":"liveLight inactive"}/><strong className={priceState==="live"?"":"notLive"}>{priceState==="live"?"LIVE":"GOLD"}</strong><b> GOLD PRICE</b></div><div className="liveSpotValue">{priceState==="live"&&livePrice!==null?money(livePrice):priceState==="loading"?"Loading gold price…":"Price unavailable"} <small>USD/oz</small></div></div>
    <div className="liveSpotSide"><span>{priceState==="loading"?"Refreshing…":priceState==="error"?"Price unavailable":updatedAt?updatedAt.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Waiting for quote"}</span><button type="button" aria-label="Refresh live gold price" onClick={refreshPrice}>↻</button></div>
   </section>
-  <section className="intro"><div className="eyebrow"><i/> GOLD BUYING</div><h1>Metal Calculator</h1></section>
   <section className="panel pricePanel">
    <div className="priceGrid">
     <label><span>Gold Price (USD/oz)</span><div className="bigInput"><b>$</b><input aria-label="Custom gold price" inputMode="decimal" value={goldPrice} placeholder="" onChange={e=>setGoldPrice(e.target.value)}/></div></label>
     <label><span>Payout</span><div className="bigInput"><input inputMode="decimal" value={payout} onChange={e=>setPayout(e.target.value)}/><b>%</b></div></label>
-   </div>
-   <div className="divider"/>
    <div className="unitLine"><strong>Weight Unit</strong><div className="toggle"><button className={unit==="dwt"?"on":""} onClick={()=>setUnit("dwt")}>DWT</button><button className={unit==="gram"?"on":""} onClick={()=>setUnit("gram")}>Grams</button></div></div>
+   </div>
   </section>
   <section className="panel purityPanel">
-   <div className="purityTitle"><div><h2>Gold by Purity</h2><p>Enter gross weight for each karat.</p></div><span>{unit}</span></div>
+   <div className="purityTitle"><div><h2>Gold by Purity</h2></div><span>{unit}</span></div>
    <div className="tableHead"><span>GROSS WEIGHT</span><span>PURITY</span><span>UNIT PRICE</span><span>TOTAL</span></div>
    {rows.map(r=><div className="metalRow" key={r.karat}>
     <div className="weightBox"><input aria-label={`${r.karat}K weight`} inputMode="decimal" value={weights[r.karat]} placeholder="0.000" onChange={e=>setWeights({...weights,[r.karat]:e.target.value})}/></div>

@@ -92,3 +92,41 @@
 .purityPanel{margin-bottom:12px}
 @media(max-width:480px){.app{padding-bottom:calc(var(--fixed-footer-height) + env(safe-area-inset-bottom, 0px))}.brandBanner{max-height:135px}.fixedBottom .summary strong{font-size:17px}}
 @media(max-height:750px){.brandBanner{max-height:115px}.intro{padding-top:10px}.fixedBottom .summary{padding:8px 12px}}
+
+/* Build 12 compact refinement — retain Build 11 palette and original action buttons */
+.brandBanner{max-height:108px}
+.liveSpot{margin-top:8px}
+.pricePanel{display:block;padding:13px 14px 12px;border-radius:23px}
+.priceGrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.78fr) minmax(0,1.12fr);gap:9px;align-items:end}
+.priceGrid label{min-width:0}
+.priceGrid label>span,.priceGrid .unitLine>strong{font-size:12px;margin:0 0 8px;white-space:nowrap;line-height:1.2}
+.priceGrid .bigInput{height:46px;border-radius:13px}
+.priceGrid .bigInput input{font-size:17px;padding:6px;min-width:0}
+.priceGrid .bigInput b{font-size:17px;padding:0 7px}
+.priceGrid .unitLine{display:flex;min-width:0;flex-direction:column;align-items:stretch;gap:0;justify-content:end}
+.priceGrid .toggle{width:100%;min-width:0;border-radius:13px;padding:3px}
+.priceGrid .toggle button{height:40px;border-radius:10px;font-size:13px;padding:0 3px}
+.purityTitle{padding:14px 16px 12px}
+.purityTitle h2{font-size:22px;margin:0}
+.purityTitle>span{padding:9px 13px;font-size:10px}
+.tableHead{height:38px}
+.metalRow{min-height:57px;padding:5px 9px}
+.weightBox input{height:40px;border-radius:12px;font-size:15px}
+@media(max-width:480px){
+ .brandBanner{max-height:105px}
+ .liveSpot{margin-top:8px}
+ .panel{margin-left:13px;margin-right:13px;margin-bottom:10px}
+ .pricePanel{padding:12px 11px 11px}
+ .priceGrid{gap:6px;grid-template-columns:minmax(0,1.12fr) minmax(0,.74fr) minmax(0,1.12fr)}
+ .priceGrid label>span,.priceGrid .unitLine>strong{font-size:10px;margin-bottom:7px;letter-spacing:-.2px}
+ .priceGrid .bigInput{height:43px;border-radius:11px}
+ .priceGrid .bigInput input{font-size:16px;padding:4px}
+ .priceGrid .bigInput b{font-size:16px;padding:0 5px}
+ .priceGrid .toggle{padding:2px;border-radius:11px}
+ .priceGrid .toggle button{height:39px;font-size:12px;border-radius:9px}
+ .purityTitle{padding:13px 14px 11px}
+ .purityTitle h2{font-size:21px}
+ .tableHead{height:38px}
+ .metalRow{min-height:56px;padding:5px 9px}
+ .weightBox input{height:39px;font-size:15px}
+}
