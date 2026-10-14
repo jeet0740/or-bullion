@@ -54,6 +54,7 @@ jobs:
           security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
           security import "$CERT_PATH" \
             -P "$CERTIFICATE_PASSWORD" \
             -A -t cert -f pkcs12 \
@@ -74,12 +75,15 @@ jobs:
           TEAM_ID=$(/usr/libexec/PlistBuddy -c 'Print TeamIdentifier:0' "$RUNNER_TEMP/profile.plist")
 
           mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+
           cp "$PROFILE_PATH" "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
 
           echo "PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
           echo "TEAM_ID=$TEAM_ID" >> "$GITHUB_ENV"
 
       - name: Configure iOS version and signing
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
         run: |
           cat > "$RUNNER_TEMP/configure.rb" <<'RUBY'
           require 'xcodeproj'
@@ -97,7 +101,7 @@ jobs:
               config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Distribution'
               config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = ENV.fetch('PROFILE_NAME')
               config.build_settings['MARKETING_VERSION'] = '1.0.0'
-              config.build_settings['CURRENT_PROJECT_VERSION'] = '1'
+              config.build_settings['CURRENT_PROJECT_VERSION'] = ENV.fetch('BUILD_NUMBER')
             end
           end
 
@@ -109,6 +113,7 @@ jobs:
       - name: Archive iOS app
         run: |
           set -o pipefail
+
           xcodebuild \
             -workspace ios/App/App.xcworkspace \
             -scheme App \
@@ -150,7 +155,6 @@ jobs:
             -exportPath "$RUNNER_TEMP/ipa" \
             -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist"
 
-     
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
@@ -167,6 +171,15 @@ jobs:
         run: |
           set -euo pipefail
 
+          if [ -z "$APPSTORE_KEY_ID" ] || \
+             [ -z "$APPSTORE_ISSUER_ID" ] || \
+             [ -z "$APPSTORE_PRIVATE_KEY" ]; then
+            echo "::error::App Store Connect credentials are missing."
+            exit 1
+          fi
+
+          echo "App Store Connect credentials are present."
+
           mkdir -p "$HOME/.appstoreconnect/private_keys"
 
           KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${APPSTORE_KEY_ID}.p8"
@@ -181,7 +194,8 @@ jobs:
             --type ios \
             --file "$IPA_PATH" \
             --apiKey "$APPSTORE_KEY_ID" \
-            --apiIssuer "$APPSTORE_ISSUER_ID"
+            --apiIssuer "$APPSTORE_ISSUER_ID" \
+            --verbose
 
       - name: Remove temporary API key
         if: always()
