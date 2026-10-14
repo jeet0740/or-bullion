@@ -95,15 +95,14 @@ function App(){
     <div className="weightBox"><input aria-label={`${r.karat}K weight`} inputMode="decimal" value={weights[r.karat]} placeholder="0.000" onChange={e=>setWeights({...weights,[r.karat]:e.target.value})}/></div>
     <strong>{r.karat}K</strong><b>{goldPrice?money(r.price):"$0.00"}</b><b className="gold">{r.weight?money(r.total):"$0.00"}</b>
    </div>)}
-   <div className="summary">
+  </section>
+  <div className="fixedBottom"><div className="summary">
     <div><small>Total Weight</small><strong>{totalWeight.toFixed(3)} {unit.toUpperCase()}</strong></div>
     <div><small>Total Value</small><strong>{money(grand)}</strong></div>
    </div>
-  </section>
   <div className="bottomActions"><button onClick={copy} disabled={!active.length}>▣ <span>Copy Calculation</span></button><button onClick={shareReceipt} disabled={!active.length}>▤ <span>Share Receipt</span></button><button onClick={reset}>↻ <span>Reset</span></button></div>
+  </div>
   {notice&&<div className="notice">{notice}</div>}
-  <footer>OR BULLION USA&nbsp; • &nbsp;Gold valuation tool</footer>
-  {!Capacitor.isNativePlatform()&&<nav className="bottomNav"><span>▦</span><b>Calculator</b></nav>}
  </main>
 }
 createRoot(document.getElementById("root")).render(<React.StrictMode><App/></React.StrictMode>);
