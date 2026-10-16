@@ -130,3 +130,48 @@
  .metalRow{min-height:56px;padding:5px 9px}
  .weightBox input{height:39px;font-size:15px}
 }
+
+/* Build 13: square icon and live quote on one row */
+html,body,#root{width:100%;max-width:100%;overflow-x:hidden}
+.app{width:100%;overflow-x:clip}
+.compactHeader{display:flex;align-items:center;gap:8px;padding:8px 12px 4px;min-width:0}
+.menuTrigger{flex:0 0 32px;border:0;background:transparent;color:inherit;font-size:23px;padding:5px 0}
+.squareLogo{width:62px;height:62px;object-fit:contain;border-radius:13px;flex:none}
+.compactHeader .liveSpot{flex:1;min-width:0;margin:0;padding:9px 10px;border-radius:15px;gap:5px}
+.compactHeader .liveSpotValue{font-size:clamp(16px,5vw,23px)}
+.compactHeader .liveSpotLabel{font-size:10px}
+.compactHeader .liveSpotSide{font-size:10px;padding-left:6px;gap:2px}
+.compactHeader .liveSpotSide button{font-size:25px}
+.pricePanel{margin-top:5px}
+.purityPanel{margin-bottom:7px}
+.purityTitle{padding-top:10px;padding-bottom:9px}
+.metalRow{min-height:51px;padding-top:4px;padding-bottom:4px}
+.weightBox input{height:37px;font-size:16px}
+.fixedBottom{padding-top:6px}
+.fixedBottom .summary{padding:8px 12px;margin-bottom:7px}
+.fixedBottom .summary strong{font-size:16px}
+.fixedBottom .bottomActions{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.fixedBottom .bottomActions button,.fixedBottom .bottomActions button:nth-child(3){grid-column:auto;min-height:40px;font-size:12px;white-space:nowrap;padding:4px 3px}
+:root{--fixed-footer-height:143px}
+input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manipulation}
+.priceGrid,.metalRow,.tableHead{min-width:0}
+.priceGrid>* ,.metalRow>*{min-width:0}
+.menuOverlay{position:fixed;inset:0;z-index:90;background:#0009}
+.sideMenu{width:min(290px,82vw);height:100%;background:#101820;color:#f5f5f4;padding:calc(22px + env(safe-area-inset-top)) 18px 20px;box-shadow:6px 0 30px #0008}
+.menuHeading{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px;color:#e2ad35}
+.menuHeading button{font-size:29px;background:none;border:0;color:inherit}
+.sideMenu>button{display:block;width:100%;text-align:left;padding:15px;border:1px solid #34404a;background:#17130b;color:#f5f5f4;border-radius:12px;margin-bottom:10px}
+.sideMenu>button[aria-pressed=true]{border-color:#d49a16;color:#e2ad35}
+.theme-light{background:#f7f5ef;color:#171b24}
+.theme-light .panel,.theme-light .liveSpot{background:#fff;color:#171b24;border-color:#d5c9b4}
+.theme-light .liveSpotLabel b,.theme-light .metalRow>strong,.theme-light .metalRow>b:not(.gold){color:#171b24}
+.theme-light .bigInput,.theme-light .weightBox input{background:#fff;color:#171b24;border-color:#c9c5be}
+.theme-light .bigInput input{color:#171b24}
+.theme-light .toggle{background:#e8e4de}
+.theme-light .toggle .on{background:#d49a16;color:#fff}
+.theme-light .metalRow{border-color:#e6e0d6}
+.theme-light .tableHead{background:#f6e7c8;color:#815600}
+.theme-light .fixedBottom{background:#f7f5ef;border-color:#d6ba75}
+.theme-light .bottomActions button:nth-child(3){background:#eeeae3;color:#171b24}
+.theme-light .menuTrigger{color:#171b24}
+@media(max-width:380px){.squareLogo{width:49px;height:49px}.compactHeader{gap:5px;padding-left:6px;padding-right:6px}.menuTrigger{flex-basis:28px}.compactHeader .liveSpotSide span{display:none}.fixedBottom .bottomActions button span{font-size:10px}}
