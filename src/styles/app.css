@@ -202,3 +202,17 @@ input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manip
 .theme-light .contactDetails{background:#fff;border-color:#d5c9b4}
 .theme-light .contactDetails p{border-color:#e8e0d5}
 .theme-light .contactDetails strong{color:#996500}
+
+/* Logo outline matching the live gold-price panel */
+.compactHeader .squareLogo{border:1px solid #354957;border-radius:15px;padding:3px;background:#0d151c}
+.theme-light .compactHeader .squareLogo{border-color:#d5c9b4;background:#fff}
+/* Single accessible theme switch in the side menu */
+.themeSwitchRow{display:flex;align-items:center;justify-content:space-between;min-height:58px;padding:8px 15px;gap:14px;font-size:17px}
+.themeSwitch{position:relative;display:inline-flex;align-items:center;width:55px;height:31px;border:1px solid #59616b;border-radius:999px;background:#343c46;padding:3px;cursor:pointer;flex-shrink:0}
+.themeSwitch.enabled{background:#c69223;border-color:#c69223}
+.themeSwitchThumb{display:block;width:23px;height:23px;background:#fff;border-radius:50%;transition:transform .18s ease;box-shadow:0 1px 4px #0005}
+.themeSwitch.enabled .themeSwitchThumb{transform:translateX(23px)}
+.themeSwitch:focus-visible{outline:2px solid #e6b644;outline-offset:3px}
+.theme-light .themeSwitchRow{color:#f5f5f4}
+.contactDetails a{color:#e6b644;text-decoration:underline;text-underline-offset:3px}
+.theme-light .contactDetails a{color:#996500}
