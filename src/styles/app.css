@@ -175,3 +175,20 @@ input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manip
 .theme-light .bottomActions button:nth-child(3){background:#eeeae3;color:#171b24}
 .theme-light .menuTrigger{color:#171b24}
 @media(max-width:380px){.squareLogo{width:49px;height:49px}.compactHeader{gap:5px;padding-left:6px;padding-right:6px}.menuTrigger{flex-basis:28px}.compactHeader .liveSpotSide span{display:none}.fixedBottom .bottomActions button span{font-size:10px}}
+
+/* Build 14: sidebar navigation and informational screens */
+.menuHeading img{width:76px;height:76px;object-fit:contain;border-radius:13px}
+.sideMenu{width:min(330px,86vw);overflow-y:auto}
+.sideMenu>button{background:transparent;border:0;border-radius:10px;margin:2px 0;text-align:left;font-size:17px;min-height:51px}
+.sideMenu>button.menuActive{background:#272b2e;color:#e6b644}
+.sideMenu>button[aria-pressed=true]{background:#211a0d;border:1px solid #b98b23}
+.menuDivider{height:1px;background:#39414a;margin:16px 0}
+.infoScreen{padding:18px 22px calc(30px + env(safe-area-inset-bottom));min-height:100vh;line-height:1.65}
+.infoHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px}
+.infoHeader button{background:transparent;color:inherit;border:0;font-size:19px;padding:8px 0}
+.infoHeader img{width:58px;height:58px;border-radius:10px}
+.infoScreen h1{font-size:29px;line-height:1.2;color:#e6b644}
+.infoScreen h2{font-size:20px;color:#e6b644;margin-top:28px}
+.infoScreen p,.infoScreen li{font-size:16px}
+.infoScreen li{margin-bottom:14px}
+.theme-light .infoScreen h1,.theme-light .infoScreen h2{color:#996500}
