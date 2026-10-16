@@ -192,3 +192,13 @@ input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manip
 .infoScreen p,.infoScreen li{font-size:16px}
 .infoScreen li{margin-bottom:14px}
 .theme-light .infoScreen h1,.theme-light .infoScreen h2{color:#996500}
+
+/* Build 14 contact page */
+.contactDetails{background:#19232c;border:1px solid #39444d;border-radius:16px;padding:5px 18px;margin-top:22px}
+.contactDetails p{display:flex;flex-direction:column;gap:4px;padding:12px 0;margin:0;border-bottom:1px solid #39444d}
+.contactDetails p:last-child{border-bottom:0}
+.contactDetails strong{font-size:14px;color:#e6b644}
+.contactDetails span{font-size:16px}
+.theme-light .contactDetails{background:#fff;border-color:#d5c9b4}
+.theme-light .contactDetails p{border-color:#e8e0d5}
+.theme-light .contactDetails strong{color:#996500}
