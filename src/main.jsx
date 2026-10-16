@@ -12,6 +12,8 @@ function App(){
  const[goldPrice,setGoldPrice]=useState(""),[payout,setPayout]=useState(DEFAULTS.payout),[unit,setUnit]=useState(DEFAULTS.weightUnit);
  const[livePrice,setLivePrice]=useState(null),[liveSource,setLiveSource]=useState(""),[weights,setWeights]=useState(()=>Object.fromEntries(KARATS.map(k=>[k,""]))),[priceState,setPriceState]=useState("loading"),[notice,setNotice]=useState(""),[updatedAt,setUpdatedAt]=useState(null);
  const requestRef=useRef(0),busyRef=useRef(false);
+ const [theme,setTheme]=useState("dark"),[menuOpen,setMenuOpen]=useState(false);
+ useEffect(()=>{document.documentElement.dataset.theme=theme;document.querySelector('meta[name="theme-color"]')?.setAttribute("content",theme==="dark"?"#080c10":"#f7f5ef")},[theme]);
  const loadPrice=async()=>{if(busyRef.current)return;busyRef.current=true;const request=++requestRef.current;try{const x=await fetchLiveGoldPrice();if(request!==requestRef.current)return;setLivePrice(x.price);setLiveSource(x.source);setUpdatedAt(new Date());setPriceState("live")}catch{setLivePrice(null);setLiveSource("");setUpdatedAt(null);setPriceState("error")}finally{busyRef.current=false}};
  useEffect(()=>{loadPrice();const timer=setInterval(()=>{if(document.visibilityState==="visible")loadPrice()},30000);const resume=()=>{if(document.visibilityState==="visible")loadPrice()};document.addEventListener("visibilitychange",resume);window.addEventListener("focus",resume);return()=>{clearInterval(timer);document.removeEventListener("visibilitychange",resume);window.removeEventListener("focus",resume)}},[]);
  const refreshPrice=()=>{if(busyRef.current)return;setPriceState("loading");loadPrice()};
@@ -73,12 +75,12 @@ function App(){
   }
  };
   const reset=()=>{setWeights(Object.fromEntries(KARATS.map(k=>[k,""])));setPayout(DEFAULTS.payout);setUnit(DEFAULTS.weightUnit);setNotice("")};
- return <main className="app">
-  <header className="brandBanner"><img src="/images/or-bullion-banner.jpeg" alt="OR Bullion USA" /></header>
+ return <main className={`app theme-${theme}`}>
+  <div className="compactHeader"><button className="menuTrigger" type="button" aria-label="Open menu" onClick={()=>setMenuOpen(true)}>☰</button><img className="squareLogo" src="/icons/or-bullion-icon-192.png" alt="OR Bullion USA" />
   <section className="liveSpot" aria-live="polite">
    <div className="liveSpotMain"><div className="liveSpotLabel"><i className={priceState==="live"?"liveLight":"liveLight inactive"}/><strong className={priceState==="live"?"":"notLive"}>{priceState==="live"?"LIVE":"GOLD"}</strong><b> GOLD PRICE</b></div><div className="liveSpotValue">{priceState==="live"&&livePrice!==null?money(livePrice):priceState==="loading"?"Loading gold price…":"Price unavailable"} <small>USD/oz</small></div></div>
    <div className="liveSpotSide"><span>{priceState==="loading"?"Refreshing…":priceState==="error"?"Price unavailable":updatedAt?updatedAt.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Waiting for quote"}</span><button type="button" aria-label="Refresh live gold price" onClick={refreshPrice}>↻</button></div>
-  </section>
+  </section></div>
   <section className="panel pricePanel">
    <div className="priceGrid">
     <label><span>Gold Price (USD/oz)</span><div className="bigInput"><b>$</b><input aria-label="Custom gold price" inputMode="decimal" value={goldPrice} placeholder="" onChange={e=>setGoldPrice(e.target.value)}/></div></label>
@@ -100,6 +102,7 @@ function App(){
    </div>
   <div className="bottomActions"><button onClick={copy} disabled={!active.length}>▣ <span>Copy Calculation</span></button><button onClick={shareReceipt} disabled={!active.length}>▤ <span>Share Receipt</span></button><button onClick={reset}>↻ <span>Reset</span></button></div>
   </div>
+  {menuOpen&&<div className="menuOverlay" onClick={()=>setMenuOpen(false)}><nav className="sideMenu" aria-label="App menu" onClick={e=>e.stopPropagation()}><div className="menuHeading"><strong>OR BULLION USA</strong><button aria-label="Close menu" onClick={()=>setMenuOpen(false)}>×</button></div><button onClick={()=>{setTheme("dark");setMenuOpen(false)}} aria-pressed={theme==="dark"}>☾ Dark Mode {theme==="dark"?"✓":""}</button><button onClick={()=>{setTheme("light");setMenuOpen(false)}} aria-pressed={theme==="light"}>☀ Light Mode {theme==="light"?"✓":""}</button></nav></div>}
   {notice&&<div className="notice">{notice}</div>}
  </main>
 }
