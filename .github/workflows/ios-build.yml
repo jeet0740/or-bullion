@@ -51,6 +51,33 @@ jobs:
           npx cap add ios
           npx cap sync ios
 
+      - name: Configure native iOS home screen icon
+        run: |
+          set -euo pipefail
+          ICON_SOURCE="public/images/app-icon.png"
+          ICON_SET="ios/App/App/Assets.xcassets/AppIcon.appiconset"
+
+          if [[ ! -f "$ICON_SOURCE" ]]; then
+            echo "Missing $ICON_SOURCE. Upload the approved square OR Bullion logo before building."
+            exit 1
+          fi
+
+          mkdir -p "$ICON_SET"
+          sips -s format png -z 1024 1024 "$ICON_SOURCE" --out "$ICON_SET/AppIcon-1024.png"
+          cat > "$ICON_SET/Contents.json" <<'JSON'
+          {
+            "images": [
+              {
+                "filename": "AppIcon-1024.png",
+                "idiom": "universal",
+                "platform": "ios",
+                "size": "1024x1024"
+              }
+            ],
+            "info": { "author": "xcode", "version": 1 }
+          }
+          JSON
+
       - name: Install CocoaPods
         run: |
           cd ios/App
