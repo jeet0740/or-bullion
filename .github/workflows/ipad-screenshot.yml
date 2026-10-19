@@ -1,0 +1,113 @@
+
+name: OR Bullion USA iPad Screenshot
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ipad-screenshot:
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        shell: bash
+        run: |
+          set -euo pipefail
+          XCODE_PATH=$(find /Applications -maxdepth 1 \
+            -type d -name 'Xcode_26*.app' | sort -V | tail -n 1)
+          test -n "$XCODE_PATH"
+          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+          xcodebuild -version
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build calculator
+        run: |
+          npm install
+          npm run build
+          npx cap add ios
+          npx cap sync ios
+          cd ios/App
+          pod install
+
+      - name: Start 13-inch iPad simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun simctl list devices available
+
+          DEVICE_ID=$(xcrun simctl list devices available -j \
+            | python3 -c '
+          import json,sys
+          data=json.load(sys.stdin)
+          for devices in data["devices"].values():
+              for d in devices:
+                  if "iPad Pro 13-inch" in d["name"] and d["state"] == "Shutdown":
+                      print(d["udid"])
+                      sys.exit(0)
+          sys.exit(1)
+          ')
+
+          echo "DEVICE_ID=$DEVICE_ID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$DEVICE_ID"
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+
+      - name: Build iOS simulator app
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination "platform=iOS Simulator,id=$DEVICE_ID" \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Install and launch calculator
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          APP_PATH="$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator/App.app"
+
+          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
+
+          BUNDLE_ID=$(/usr/libexec/PlistBuddy \
+            -c 'Print CFBundleIdentifier' "$APP_PATH/Info.plist")
+
+          xcrun simctl status_bar "$DEVICE_ID" override \
+            --time "9:41" \
+            --dataNetwork wifi \
+            --wifiMode active \
+            --wifiBars 3 \
+            --batteryState charged \
+            --batteryLevel 100
+
+          xcrun simctl launch "$DEVICE_ID" "$BUNDLE_ID"
+          sleep 15
+
+          mkdir -p screenshots
+
+          xcrun simctl io "$DEVICE_ID" screenshot \
+            screenshots/OR-Bullion-iPad-13-inch.png
+
+          sips -g pixelWidth -g pixelHeight \
+            screenshots/OR-Bullion-iPad-13-inch.png
+
+      - name: Upload screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: OR-Bullion-iPad-Screenshot
+          path: screenshots/*.png
+          if-no-files-found: error
+          retention-days: 7
