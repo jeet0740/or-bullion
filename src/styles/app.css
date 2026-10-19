@@ -76,3 +76,102 @@
  .metalRow{min-height:65px;padding:6px 10px}
  .weightBox input{height:46px}
 }
+
+/* Build 10: respect Dynamic Island, preserve original controls, fixed results/actions */
+:root{--fixed-footer-height:214px}
+.app{padding-top:env(safe-area-inset-top, 0px);padding-bottom:calc(var(--fixed-footer-height) + env(safe-area-inset-bottom, 0px))}
+.brandBanner{max-height:160px}
+.brandBanner img{width:100%;height:auto}
+.fixedBottom{position:fixed;z-index:30;bottom:0;left:50%;transform:translateX(-50%);width:min(620px,100%);background:#080c10;border-top:1px solid #493615;padding:8px 14px calc(10px + env(safe-area-inset-bottom, 0px));box-shadow:0 -8px 24px #000a}
+.fixedBottom .summary{margin:0 0 9px;padding:11px 15px;border-radius:16px;gap:10px}
+.fixedBottom .summary small{font-size:11px}
+.fixedBottom .summary strong{font-size:19px;margin-top:3px}
+.fixedBottom .bottomActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0}
+.fixedBottom .bottomActions button{min-height:40px;font-size:12px;border-radius:11px;padding:5px 6px;gap:5px}
+.fixedBottom .bottomActions button:nth-child(3){grid-column:1/-1;min-height:37px}
+.purityPanel{margin-bottom:12px}
+@media(max-width:480px){.app{padding-bottom:calc(var(--fixed-footer-height) + env(safe-area-inset-bottom, 0px))}.brandBanner{max-height:135px}.fixedBottom .summary strong{font-size:17px}}
+@media(max-height:750px){.brandBanner{max-height:115px}.intro{padding-top:10px}.fixedBottom .summary{padding:8px 12px}}
+
+/* Build 12 compact refinement — retain Build 11 palette and original action buttons */
+.brandBanner{max-height:108px}
+.liveSpot{margin-top:8px}
+.pricePanel{display:block;padding:13px 14px 12px;border-radius:23px}
+.priceGrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.78fr) minmax(0,1.12fr);gap:9px;align-items:end}
+.priceGrid label{min-width:0}
+.priceGrid label>span,.priceGrid .unitLine>strong{font-size:12px;margin:0 0 8px;white-space:nowrap;line-height:1.2}
+.priceGrid .bigInput{height:46px;border-radius:13px}
+.priceGrid .bigInput input{font-size:17px;padding:6px;min-width:0}
+.priceGrid .bigInput b{font-size:17px;padding:0 7px}
+.priceGrid .unitLine{display:flex;min-width:0;flex-direction:column;align-items:stretch;gap:0;justify-content:end}
+.priceGrid .toggle{width:100%;min-width:0;border-radius:13px;padding:3px}
+.priceGrid .toggle button{height:40px;border-radius:10px;font-size:13px;padding:0 3px}
+.purityTitle{padding:14px 16px 12px}
+.purityTitle h2{font-size:22px;margin:0}
+.purityTitle>span{padding:9px 13px;font-size:10px}
+.tableHead{height:38px}
+.metalRow{min-height:57px;padding:5px 9px}
+.weightBox input{height:40px;border-radius:12px;font-size:15px}
+@media(max-width:480px){
+ .brandBanner{max-height:105px}
+ .liveSpot{margin-top:8px}
+ .panel{margin-left:13px;margin-right:13px;margin-bottom:10px}
+ .pricePanel{padding:12px 11px 11px}
+ .priceGrid{gap:6px;grid-template-columns:minmax(0,1.12fr) minmax(0,.74fr) minmax(0,1.12fr)}
+ .priceGrid label>span,.priceGrid .unitLine>strong{font-size:10px;margin-bottom:7px;letter-spacing:-.2px}
+ .priceGrid .bigInput{height:43px;border-radius:11px}
+ .priceGrid .bigInput input{font-size:16px;padding:4px}
+ .priceGrid .bigInput b{font-size:16px;padding:0 5px}
+ .priceGrid .toggle{padding:2px;border-radius:11px}
+ .priceGrid .toggle button{height:39px;font-size:12px;border-radius:9px}
+ .purityTitle{padding:13px 14px 11px}
+ .purityTitle h2{font-size:21px}
+ .tableHead{height:38px}
+ .metalRow{min-height:56px;padding:5px 9px}
+ .weightBox input{height:39px;font-size:15px}
+}
+
+/* Build 13: square icon and live quote on one row */
+html,body,#root{width:100%;max-width:100%;overflow-x:hidden}
+.app{width:100%;overflow-x:clip}
+.compactHeader{display:flex;align-items:center;gap:8px;padding:8px 12px 4px;min-width:0}
+.menuTrigger{flex:0 0 32px;border:0;background:transparent;color:inherit;font-size:23px;padding:5px 0}
+.squareLogo{width:62px;height:62px;object-fit:contain;border-radius:13px;flex:none}
+.compactHeader .liveSpot{flex:1;min-width:0;margin:0;padding:9px 10px;border-radius:15px;gap:5px}
+.compactHeader .liveSpotValue{font-size:clamp(16px,5vw,23px)}
+.compactHeader .liveSpotLabel{font-size:10px}
+.compactHeader .liveSpotSide{font-size:10px;padding-left:6px;gap:2px}
+.compactHeader .liveSpotSide button{font-size:25px}
+.pricePanel{margin-top:5px}
+.purityPanel{margin-bottom:7px}
+.purityTitle{padding-top:10px;padding-bottom:9px}
+.metalRow{min-height:51px;padding-top:4px;padding-bottom:4px}
+.weightBox input{height:37px;font-size:16px}
+.fixedBottom{padding-top:6px}
+.fixedBottom .summary{padding:8px 12px;margin-bottom:7px}
+.fixedBottom .summary strong{font-size:16px}
+.fixedBottom .bottomActions{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.fixedBottom .bottomActions button,.fixedBottom .bottomActions button:nth-child(3){grid-column:auto;min-height:40px;font-size:12px;white-space:nowrap;padding:4px 3px}
+:root{--fixed-footer-height:143px}
+input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manipulation}
+.priceGrid,.metalRow,.tableHead{min-width:0}
+.priceGrid>* ,.metalRow>*{min-width:0}
+.menuOverlay{position:fixed;inset:0;z-index:90;background:#0009}
+.sideMenu{width:min(290px,82vw);height:100%;background:#101820;color:#f5f5f4;padding:calc(22px + env(safe-area-inset-top)) 18px 20px;box-shadow:6px 0 30px #0008}
+.menuHeading{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px;color:#e2ad35}
+.menuHeading button{font-size:29px;background:none;border:0;color:inherit}
+.sideMenu>button{display:block;width:100%;text-align:left;padding:15px;border:1px solid #34404a;background:#17130b;color:#f5f5f4;border-radius:12px;margin-bottom:10px}
+.sideMenu>button[aria-pressed=true]{border-color:#d49a16;color:#e2ad35}
+.theme-light{background:#f7f5ef;color:#171b24}
+.theme-light .panel,.theme-light .liveSpot{background:#fff;color:#171b24;border-color:#d5c9b4}
+.theme-light .liveSpotLabel b,.theme-light .metalRow>strong,.theme-light .metalRow>b:not(.gold){color:#171b24}
+.theme-light .bigInput,.theme-light .weightBox input{background:#fff;color:#171b24;border-color:#c9c5be}
+.theme-light .bigInput input{color:#171b24}
+.theme-light .toggle{background:#e8e4de}
+.theme-light .toggle .on{background:#d49a16;color:#fff}
+.theme-light .metalRow{border-color:#e6e0d6}
+.theme-light .tableHead{background:#f6e7c8;color:#815600}
+.theme-light .fixedBottom{background:#f7f5ef;border-color:#d6ba75}
+.theme-light .bottomActions button:nth-child(3){background:#eeeae3;color:#171b24}
+.theme-light .menuTrigger{color:#171b24}
+@media(max-width:380px){.squareLogo{width:49px;height:49px}.compactHeader{gap:5px;padding-left:6px;padding-right:6px}.menuTrigger{flex-basis:28px}.compactHeader .liveSpotSide span{display:none}.fixedBottom .bottomActions button span{font-size:10px}}
