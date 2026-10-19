@@ -1,0 +1,4 @@
+name: OR Bullion USA iPad Screenshot
+
+on:
+  workflow_dispatch:
