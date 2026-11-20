@@ -3,7 +3,7 @@ import { Capacitor } from "@capacitor/core";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Share } from "@capacitor/share";
 import { money } from "../calculations/gold.js";
-import { SILVER_PURITIES, SILVER_DEFAULT_PAYOUT, silverUnitPrice, silverRowTotal } from "../calculations/silver.js";
+import { SILVER_PURITIES, silverUnitPrice, silverRowTotal } from "../calculations/silver.js";
 import { fetchLiveSilverPrice } from "../services/silverPrice.js";
 import "./silver.css";
 
@@ -11,7 +11,7 @@ export default function SilverCalculator() {
   const [spot, setSpot] = useState(null);
   const [quoteStatus, setQuoteStatus] = useState("loading");
   const [price, setPrice] = useState("");
-  const [payout, setPayout] = useState(String(SILVER_DEFAULT_PAYOUT));
+  const [payout, setPayout] = useState("");
   const [unit, setUnit] = useState("oz");
   const [weights, setWeights] = useState({});
   const [notice, setNotice] = useState("");
@@ -70,7 +70,7 @@ export default function SilverCalculator() {
       } else { await navigator.clipboard.writeText(content); setNotice("Calculation copied for sharing"); }
     } catch (e) { if (e?.name !== "AbortError") setNotice("Unable to share calculation"); }
   };
-  const reset = () => { setWeights({}); setUnit("oz"); setPayout(String(SILVER_DEFAULT_PAYOUT)); setPrice(spot == null ? "" : String(spot)); setNotice(""); };
+  const reset = () => { setWeights({}); setUnit("oz"); setPayout(""); setPrice(spot == null ? "" : String(spot)); setNotice(""); };
   return <div className="silverCalculator">
     <section className="silverLive"><div><span className={"silverDot "+(quoteStatus === "live" ? "on" : "")}/><strong>LIVE SILVER PRICE</strong><small>USD per Troy Oz</small></div><strong>{quoteStatus === "live" ? money(spot) : quoteStatus === "loading" ? "Loading…" : "Unavailable"}</strong><button onClick={loadQuote} aria-label="Refresh silver price">↻</button></section>
     <h2 className="silverHeading">Silver Calculator</h2>
