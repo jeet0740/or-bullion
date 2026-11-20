@@ -5,7 +5,7 @@ import { Share } from "@capacitor/share";
 import { money } from "../calculations/gold.js";
 import { PLATINUM_PURITIES, platinumUnitPrice, platinumRowTotal } from "../calculations/platinum.js";
 import { fetchLivePlatinumPrice } from "../services/platinumPrice.js";
-import "./silver.css";
+
 
 export default function PlatinumCalculator() {
   const [spot, setSpot] = useState(null);
@@ -71,16 +71,25 @@ export default function PlatinumCalculator() {
     } catch (e) { if (e?.name !== "AbortError") setNotice("Unable to share calculation"); }
   };
   const reset = () => { setWeights({}); setUnit("dwt"); setPayout(""); setPrice(spot == null ? "" : String(spot)); setNotice(""); };
-  return <div className="silverCalculator">
-    <section className="silverLive"><div><span className={"silverDot "+(quoteStatus === "live" ? "on" : "")}/><strong>LIVE PLATINUM PRICE</strong><small>USD per Troy Oz</small></div><strong>{quoteStatus === "live" ? money(spot) : quoteStatus === "loading" ? "Loading…" : "Unavailable"}</strong><button onClick={loadQuote} aria-label="Refresh platinum price">↻</button></section>
-    <h2 className="silverHeading">Platinum Calculator</h2>
-    <section className="silverControls"><label>Platinum Price (USD/oz)<input inputMode="decimal" value={price} onChange={e => setPrice(e.target.value)} /></label><label>Payout (%)<input inputMode="decimal" value={payout} onChange={e => setPayout(e.target.value)} /></label></section>
-    <section className="silverUnits"><strong>Weight Unit</strong><div role="group" aria-label="Platinum weight unit">{[["dwt","DWT"],["gram","Gram"]].map(([value,label])=><button key={value} className={unit===value?"selected":""} onClick={()=>setUnit(value)}>{label}</button>)}</div></section>
-    <section className="silverTable"><div className="silverTableHead"><span>GROSS WEIGHT</span><span>PURITY</span><span>UNIT PRICE</span><span>TOTAL</span></div>
-      {rows.map(row=><div className="silverRow" key={row.id}><input aria-label={row.label+" platinum weight"} inputMode="decimal" placeholder="0.000" value={row.weight} onChange={e=>setWeights(old=>({...old,[row.id]:e.target.value}))}/><strong>{row.label}</strong><span>{money(row.unitPrice)}</span><b>{money(row.total)}</b></div>)}
+  return <div className="matchingMetalCalculator">
+    <section className="compactHeader metalQuoteHeader">
+      <section className="liveSpot" aria-live="polite">
+        <div className="liveSpotMain"><div className="liveSpotLabel"><i className={quoteStatus==="live"?"liveLight":"liveLight inactive"}/><strong className={quoteStatus==="live"?"":"notLive"}>{quoteStatus==="live"?"LIVE":"PLATINUM"}</strong><b> PLATINUM PRICE</b></div>
+        <div className="liveSpotValue">{quoteStatus==="live"?money(spot):quoteStatus==="loading"?"Loading…":"Price unavailable"} <small>USD/oz</small></div></div>
+        <div className="liveSpotSide"><button type="button" onClick={loadQuote} aria-label="Refresh platinum price">↻</button></div>
+      </section>
     </section>
-    <section className="silverSummary"><div><small>Total Weight</small><strong>{totalWeight.toFixed(3)} {unit === "gram" ? "g" : "DWT"}</strong></div><div><small>Total Value</small><strong>{money(totalValue)}</strong></div></section>
-    <div className="silverActions"><button disabled={!active.length} onClick={copy}>▣ Copy</button><button disabled={!active.length} onClick={share}>▤ Share</button><button onClick={reset}>↻ Reset</button></div>
-    {notice && <p className="silverNotice" role="status">{notice}</p>}
+    <section className="panel pricePanel"><div className="priceGrid">
+      <label><span>Platinum Price (USD/oz)</span><div className="bigInput"><b>$</b><input aria-label="Platinum price" inputMode="decimal" value={price} onChange={e=>setPrice(e.target.value)}/></div></label>
+      <label><span>Payout</span><div className="bigInput"><input aria-label="Platinum payout" inputMode="decimal" value={payout} onChange={e=>setPayout(e.target.value)}/><b>%</b></div></label>
+      <div className="unitLine"><strong>Weight Unit</strong><div className="toggle">{[["dwt","DWT"],["gram","Grams"]].map(([value,label])=><button key={value} className={unit===value?"on":""} onClick={()=>setUnit(value)}>{label}</button>)}</div></div>
+    </div></section>
+    <section className="panel purityPanel"><div className="purityTitle"><div><h2>Platinum by Purity</h2></div><span>{unit==="gram"?"GRAM":unit.toUpperCase()}</span></div>
+      <div className="tableHead"><span>GROSS WEIGHT</span><span>PURITY</span><span>UNIT PRICE</span><span>TOTAL</span></div>
+      {rows.map(row=><div className="metalRow" key={row.id}><div className="weightBox"><input aria-label={row.label+" platinum weight"} inputMode="decimal" placeholder="0.000" value={row.weight} onChange={e=>setWeights(old=>({...old,[row.id]:e.target.value}))}/></div><strong>{row.label}</strong><b>{money(row.unitPrice)}</b><b className="gold">{money(row.total)}</b></div>)}
+    </section>
+    <div className="fixedBottom"><div className="summary"><div><small>Total Weight</small><strong>{totalWeight.toFixed(3)} {unit==="gram"?"g":unit==="oz"?"Oz":"DWT"}</strong></div><div><small>Total Value</small><strong>{money(totalValue)}</strong></div></div>
+      <div className="bottomActions"><button onClick={copy} disabled={!active.length}>▣ <span>Copy</span></button><button onClick={share} disabled={!active.length}>▤ <span>Share Receipt</span></button><button onClick={reset}>↻ <span>Reset</span></button></div></div>
+    {notice&&<div className="notice">{notice}</div>}
   </div>;
 }
