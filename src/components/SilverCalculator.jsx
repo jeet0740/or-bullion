@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Capacitor } from "@capacitor/core";
-import { Filesystem, Directory } from "@capacitor/filesystem";
-import { Share } from "@capacitor/share";
+import { shareMetalReceipt } from "../services/metalReceipt.js";
 import { money } from "../calculations/gold.js";
 import { SILVER_PURITIES, silverUnitPrice, silverRowTotal } from "../calculations/silver.js";
 import { fetchLiveSilverPrice } from "../services/silverPrice.js";
@@ -59,16 +57,15 @@ export default function SilverCalculator({onMenu}) {
     catch { setNotice("Unable to copy calculation"); }
   };
   const share = async () => {
+    if (!active.length) { setNotice("Enter a weight first"); return; }
     try {
-      const content = receipt();
-      if (Capacitor.isNativePlatform()) {
-        const data = btoa(unescape(encodeURIComponent(content)));
-        const saved = await Filesystem.writeFile({path:"OR-Bullion-Silver-"+Date.now()+".txt",data,directory:Directory.Cache});
-        await Share.share({title:"OR Bullion USA Silver Calculation",url:saved.uri});
-      } else if (navigator.share) {
-        await navigator.share({title:"OR Bullion USA Silver Calculation",text:content});
-      } else { await navigator.clipboard.writeText(content); setNotice("Calculation copied for sharing"); }
-    } catch (e) { if (e?.name !== "AbortError") setNotice("Unable to share calculation"); }
+      await shareMetalReceipt({metal:"Silver",price,payout,unitLabel,rows:active,totalWeight,totalValue});
+      setNotice("Receipt ready to share");
+    } catch(e) {
+      if(e?.name==="AbortError"||String(e?.message||"").toLowerCase().includes("cancel")){setNotice("Share cancelled");return;}
+      console.error("Silver receipt sharing failed",e);
+      setNotice("Could not share receipt: "+String(e?.message||e).slice(0,100));
+    }
   };
   const reset = () => { setWeights({}); setUnit("oz"); setPayout(""); setPrice(""); setNotice(""); };
   return <div className="matchingMetalCalculator">
