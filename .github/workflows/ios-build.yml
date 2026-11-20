@@ -6,34 +6,23 @@ on:
 
 jobs:
   ios-release:
-    runs-on: macos-15
+    runs-on: xcode-27
     timeout-minutes: 60
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Select Xcode 26 or newer
+      - name: Verify Xcode 27 and iOS 27 SDK
         run: |
           set -euo pipefail
-
-          echo "Available Xcode installations:"
-          ls -d /Applications/Xcode*.app || true
-
-          XCODE_PATH=$(find /Applications -maxdepth 1 \
-            -type d -name 'Xcode_26*.app' \
-            | sort -V | tail -n 1)
-
-          if [[ -z "$XCODE_PATH" ]]; then
-            echo "ERROR: Xcode 26 or newer is not installed."
-            echo "A different macOS runner image is required."
+          xcodebuild -version
+          SDK_VERSION="$(xcrun --sdk iphoneos --show-sdk-version)"
+          echo "iOS SDK version: $SDK_VERSION"
+          if [[ "${SDK_VERSION%%.*}" -lt 27 ]]; then
+            echo "ERROR: iOS 27 SDK or newer is required."
             exit 1
           fi
-
-          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
-
-          xcodebuild -version
-          xcrun --sdk iphoneos --show-sdk-version
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
