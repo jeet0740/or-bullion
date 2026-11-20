@@ -1,7 +1,7 @@
 export const KARATS = [9, 10, 12, 14, 16, 18, 21, 22, 24];
 
 export const DEFAULTS = Object.freeze({
-  payout: 98,
+  payout: "",
   weightUnit: "dwt",
   goldPrice: "",
 });
