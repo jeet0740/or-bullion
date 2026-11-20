@@ -8,6 +8,8 @@ import { fetchLivePlatinumPrice } from "../services/platinumPrice.js";
 export default function PlatinumCalculator({onMenu}) {
   const [spot, setSpot] = useState(null);
   const [quoteStatus, setQuoteStatus] = useState("loading");
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
   const [price, setPrice] = useState("");
   const [payout, setPayout] = useState("");
   const [unit, setUnit] = useState("dwt");
@@ -17,14 +19,16 @@ export default function PlatinumCalculator({onMenu}) {
   const loadQuote = async () => {
     if (busy.current) return;
     busy.current = true;
+    setRefreshing(true);
     try {
       const result = await fetchLivePlatinumPrice();
       setSpot(result.price);
+      setLastUpdated(new Date());
       
       setQuoteStatus("live");
     } catch {
       setQuoteStatus("error");
-    } finally { busy.current = false; }
+    } finally { busy.current = false; setRefreshing(false); }
   };
   useEffect(() => {
     loadQuote();
@@ -71,9 +75,9 @@ export default function PlatinumCalculator({onMenu}) {
   return <div className="matchingMetalCalculator">
     <section className="compactHeader metalQuoteHeader"><button className="menuTrigger" type="button" aria-label="Open menu" onClick={onMenu}>☰</button><img className="squareLogo" src="/images/app-icon.png" alt="OR Bullion USA"/>
       <section className="liveSpot" aria-live="polite">
-        <div className="liveSpotMain"><div className="liveSpotLabel"><i className={quoteStatus==="live"?"liveLight":"liveLight inactive"}/><strong className={quoteStatus==="live"?"":"notLive"}>{quoteStatus==="live"?"LIVE":"PLATINUM"}</strong><b> PLATINUM PRICE</b></div>
+        <div className="liveSpotMain"><div className="liveSpotLabel"><i className={quoteStatus==="live"?"liveLight":"liveLight inactive"}/><strong className={quoteStatus==="live"?"":"notLive"}>{refreshing?"UPDATING":quoteStatus==="live"?"LIVE":"PLATINUM"}</strong><b> PLATINUM PRICE</b></div>
         <div className="liveSpotValue">{quoteStatus==="live"?money(spot):quoteStatus==="loading"?"Loading…":"Price unavailable"} <small>USD/oz</small></div></div>
-        <div className="liveSpotSide"><button type="button" onClick={loadQuote} aria-label="Refresh platinum price">↻</button></div>
+        <div className="liveSpotSide">{lastUpdated&&<span className="quoteTime">{lastUpdated.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}</span>}<button type="button" onClick={loadQuote} aria-label="Refresh platinum price" disabled={refreshing} className={refreshing?"refreshing":""}>↻</button></div>
       </section>
     </section>
     <section className="panel pricePanel"><div className="priceGrid">
