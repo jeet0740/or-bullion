@@ -5,7 +5,7 @@ import { Share } from "@capacitor/share";
 import { money } from "../calculations/gold.js";
 import { PLATINUM_PURITIES, platinumUnitPrice, platinumRowTotal } from "../calculations/platinum.js";
 import { fetchLivePlatinumPrice } from "../services/platinumPrice.js";
-import "./platinum.css";
+import "./silver.css";
 
 export default function PlatinumCalculator() {
   const [spot, setSpot] = useState(null);
@@ -71,16 +71,16 @@ export default function PlatinumCalculator() {
     } catch (e) { if (e?.name !== "AbortError") setNotice("Unable to share calculation"); }
   };
   const reset = () => { setWeights({}); setUnit("dwt"); setPayout(""); setPrice(spot == null ? "" : String(spot)); setNotice(""); };
-  return <div className="platinumCalculator">
-    <section className="platinumLive"><div><span className={"platinumDot "+(quoteStatus === "live" ? "on" : "")}/><strong>LIVE PLATINUM PRICE</strong><small>USD per Troy Oz</small></div><strong>{quoteStatus === "live" ? money(spot) : quoteStatus === "loading" ? "Loading…" : "Unavailable"}</strong><button onClick={loadQuote} aria-label="Refresh platinum price">↻</button></section>
-    <h2 className="platinumHeading">Platinum Calculator</h2>
-    <section className="platinumControls"><label>Platinum Price (USD/oz)<input inputMode="decimal" value={price} onChange={e => setPrice(e.target.value)} /></label><label>Payout (%)<input inputMode="decimal" value={payout} onChange={e => setPayout(e.target.value)} /></label></section>
-    <section className="platinumUnits"><strong>Weight Unit</strong><div role="group" aria-label="Platinum weight unit">{[["dwt","DWT"],["gram","Gram"]].map(([value,label])=><button key={value} className={unit===value?"selected":""} onClick={()=>setUnit(value)}>{label}</button>)}</div></section>
-    <section className="platinumTable"><div className="platinumTableHead"><span>GROSS WEIGHT</span><span>PURITY</span><span>UNIT PRICE</span><span>TOTAL</span></div>
-      {rows.map(row=><div className="platinumRow" key={row.id}><input aria-label={row.label+" platinum weight"} inputMode="decimal" placeholder="0.000" value={row.weight} onChange={e=>setWeights(old=>({...old,[row.id]:e.target.value}))}/><strong>{row.label}</strong><span>{money(row.unitPrice)}</span><b>{money(row.total)}</b></div>)}
+  return <div className="silverCalculator">
+    <section className="silverLive"><div><span className={"silverDot "+(quoteStatus === "live" ? "on" : "")}/><strong>LIVE PLATINUM PRICE</strong><small>USD per Troy Oz</small></div><strong>{quoteStatus === "live" ? money(spot) : quoteStatus === "loading" ? "Loading…" : "Unavailable"}</strong><button onClick={loadQuote} aria-label="Refresh platinum price">↻</button></section>
+    <h2 className="silverHeading">Platinum Calculator</h2>
+    <section className="silverControls"><label>Platinum Price (USD/oz)<input inputMode="decimal" value={price} onChange={e => setPrice(e.target.value)} /></label><label>Payout (%)<input inputMode="decimal" value={payout} onChange={e => setPayout(e.target.value)} /></label></section>
+    <section className="silverUnits"><strong>Weight Unit</strong><div role="group" aria-label="Platinum weight unit">{[["dwt","DWT"],["gram","Gram"]].map(([value,label])=><button key={value} className={unit===value?"selected":""} onClick={()=>setUnit(value)}>{label}</button>)}</div></section>
+    <section className="silverTable"><div className="silverTableHead"><span>GROSS WEIGHT</span><span>PURITY</span><span>UNIT PRICE</span><span>TOTAL</span></div>
+      {rows.map(row=><div className="silverRow" key={row.id}><input aria-label={row.label+" platinum weight"} inputMode="decimal" placeholder="0.000" value={row.weight} onChange={e=>setWeights(old=>({...old,[row.id]:e.target.value}))}/><strong>{row.label}</strong><span>{money(row.unitPrice)}</span><b>{money(row.total)}</b></div>)}
     </section>
-    <section className="platinumSummary"><div><small>Total Weight</small><strong>{totalWeight.toFixed(3)} {unit === "gram" ? "g" : "DWT"}</strong></div><div><small>Total Value</small><strong>{money(totalValue)}</strong></div></section>
-    <div className="platinumActions"><button disabled={!active.length} onClick={copy}>▣ Copy</button><button disabled={!active.length} onClick={share}>▤ Share</button><button onClick={reset}>↻ Reset</button></div>
-    {notice && <p className="platinumNotice" role="status">{notice}</p>}
+    <section className="silverSummary"><div><small>Total Weight</small><strong>{totalWeight.toFixed(3)} {unit === "gram" ? "g" : "DWT"}</strong></div><div><small>Total Value</small><strong>{money(totalValue)}</strong></div></section>
+    <div className="silverActions"><button disabled={!active.length} onClick={copy}>▣ Copy</button><button disabled={!active.length} onClick={share}>▤ Share</button><button onClick={reset}>↻ Reset</button></div>
+    {notice && <p className="silverNotice" role="status">{notice}</p>}
   </div>;
 }
