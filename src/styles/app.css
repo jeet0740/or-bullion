@@ -221,3 +221,20 @@ input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manip
 .metalTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;margin:12px 16px 14px;padding:3px;border:1px solid #a57e35;border-radius:13px;background:#151719}.metalTabs button{padding:12px;border:0;border-radius:10px;background:transparent;color:#e9c06d;font-weight:800;font-size:17px}.metalTabs button.active{background:linear-gradient(135deg,#e8c77b,#bd8b2d);color:#17120b}.theme-light .metalTabs{background:#eee5d3}.theme-light .metalTabs button:not(.active){color:#654916}
 
 .metalTabs button{min-width:0;font-size:15px;padding:12px 3px}
+
+/* Shared Gold design for Silver and Platinum */
+.matchingMetalCalculator .metalQuoteHeader{padding-top:8px;padding-bottom:4px}
+.matchingMetalCalculator .metalQuoteHeader .liveSpot{flex:1;min-width:0}
+.matchingMetalCalculator .pricePanel{margin-top:5px}
+.matchingMetalCalculator .priceGrid .toggle button{min-width:0}
+.matchingMetalCalculator .fixedBottom .summary{background:linear-gradient(120deg,#f2c24d,#e6a500)}
+.matchingMetalCalculator .fixedBottom .bottomActions button:nth-child(2){background:linear-gradient(135deg,#3b2a0a,#211706);border-color:#b17b16;color:#f1bd45}
+.matchingMetalCalculator .fixedBottom .bottomActions button:nth-child(3){background:#111820;border-color:#39444d;color:#e8e8e8}
+.theme-light .matchingMetalCalculator .fixedBottom .bottomActions button:nth-child(3){background:#eeeae3;color:#171b24}
+@media(max-width:480px){
+ .matchingMetalCalculator .priceGrid{grid-template-columns:minmax(0,1.12fr) minmax(0,.74fr) minmax(0,1.12fr)}
+ .matchingMetalCalculator .priceGrid label>span{font-size:9px}
+ .matchingMetalCalculator .priceGrid .toggle button{font-size:11px;padding:0 1px}
+ .matchingMetalCalculator .metalQuoteHeader .liveSpotLabel{font-size:9px}
+ .matchingMetalCalculator .metalQuoteHeader .liveSpotValue{font-size:clamp(15px,4.8vw,22px)}
+}
