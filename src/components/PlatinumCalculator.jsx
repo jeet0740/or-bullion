@@ -7,7 +7,7 @@ import { PLATINUM_PURITIES, platinumUnitPrice, platinumRowTotal } from "../calcu
 import { fetchLivePlatinumPrice } from "../services/platinumPrice.js";
 
 
-export default function PlatinumCalculator() {
+export default function PlatinumCalculator({onMenu}) {
   const [spot, setSpot] = useState(null);
   const [quoteStatus, setQuoteStatus] = useState("loading");
   const [price, setPrice] = useState("");
@@ -72,7 +72,7 @@ export default function PlatinumCalculator() {
   };
   const reset = () => { setWeights({}); setUnit("dwt"); setPayout(""); setPrice(spot == null ? "" : String(spot)); setNotice(""); };
   return <div className="matchingMetalCalculator">
-    <section className="compactHeader metalQuoteHeader">
+    <section className="compactHeader metalQuoteHeader"><button className="menuTrigger" type="button" aria-label="Open menu" onClick={onMenu}>☰</button><img className="squareLogo" src="/images/app-icon.png" alt="OR Bullion USA"/>
       <section className="liveSpot" aria-live="polite">
         <div className="liveSpotMain"><div className="liveSpotLabel"><i className={quoteStatus==="live"?"liveLight":"liveLight inactive"}/><strong className={quoteStatus==="live"?"":"notLive"}>{quoteStatus==="live"?"LIVE":"PLATINUM"}</strong><b> PLATINUM PRICE</b></div>
         <div className="liveSpotValue">{quoteStatus==="live"?money(spot):quoteStatus==="loading"?"Loading…":"Price unavailable"} <small>USD/oz</small></div></div>
