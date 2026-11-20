@@ -257,3 +257,33 @@ input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manip
 .metalTabs button:focus-visible{outline:2px solid #f0c458;outline-offset:2px}
 .theme-light .metalTabs{background:#f3ede2;border-color:#b38a39}
 @media(max-width:380px){.metalTabs button{font-size:14px;min-height:46px}.matchingMetalCalculator .liveSpotSide .quoteTime{display:none}}
+
+/* Light mode parity: Silver and Platinum use the same palette as Gold */
+.theme-light .matchingMetalCalculator{color:#171b24}
+.theme-light .matchingMetalCalculator .panel,
+.theme-light .matchingMetalCalculator .liveSpot{background:#fff;color:#171b24;border-color:#d5c9b4}
+.theme-light .matchingMetalCalculator .liveSpotLabel b,
+.theme-light .matchingMetalCalculator .metalRow>strong,
+.theme-light .matchingMetalCalculator .metalRow>b:not(.gold),
+.theme-light .matchingMetalCalculator .purityTitle h2,
+.theme-light .matchingMetalCalculator .unitLine>strong,
+.theme-light .matchingMetalCalculator .priceGrid label>span{color:#171b24}
+.theme-light .matchingMetalCalculator .liveSpotValue small,
+.theme-light .matchingMetalCalculator .liveSpotSide .quoteTime{color:#58616a}
+.theme-light .matchingMetalCalculator .bigInput,
+.theme-light .matchingMetalCalculator .weightBox input{background:#fff;color:#171b24;border-color:#c9c5be}
+.theme-light .matchingMetalCalculator .bigInput input{background:transparent;color:#171b24}
+.theme-light .matchingMetalCalculator .toggle{background:#e8e4de;border-color:#d0c8b9}
+.theme-light .matchingMetalCalculator .toggle button{color:#31343a;background:transparent}
+.theme-light .matchingMetalCalculator .toggle button.on{background:#d49a16;color:#fff}
+.theme-light .matchingMetalCalculator .tableHead{background:#f6e7c8;color:#815600}
+.theme-light .matchingMetalCalculator .metalRow{background:#fff;border-color:#e6e0d6}
+.theme-light .matchingMetalCalculator .metalRow b.gold{color:#a66f06}
+.theme-light .matchingMetalCalculator .fixedBottom{background:#f7f5ef;border-color:#d6ba75}
+.theme-light .matchingMetalCalculator .fixedBottom .summary{background:linear-gradient(120deg,#f2c24d,#e6a500)}
+.theme-light .matchingMetalCalculator .fixedBottom .summary small,
+.theme-light .matchingMetalCalculator .fixedBottom .summary strong{color:#fff}
+.theme-light .matchingMetalCalculator .fixedBottom .bottomActions button:nth-child(1){background:#17130b;color:#e2ad35}
+.theme-light .matchingMetalCalculator .fixedBottom .bottomActions button:nth-child(2){background:linear-gradient(135deg,#3b2a0a,#211706);color:#f1bd45}
+.theme-light .matchingMetalCalculator .fixedBottom .bottomActions button:nth-child(3){background:#eeeae3;color:#171b24}
+.theme-light .matchingMetalCalculator .notice{color:#805600}
