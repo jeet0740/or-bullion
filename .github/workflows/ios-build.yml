@@ -6,34 +6,23 @@ on:
 
 jobs:
   ios-release:
-    runs-on: macos-15
+    runs-on: xcode-27
     timeout-minutes: 60
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Select Xcode 26 or newer
+      - name: Verify Xcode 27 and iOS 27 SDK
         run: |
           set -euo pipefail
-
-          echo "Available Xcode installations:"
-          ls -d /Applications/Xcode*.app || true
-
-          XCODE_PATH=$(find /Applications -maxdepth 1 \
-            -type d -name 'Xcode_26*.app' \
-            | sort -V | tail -n 1)
-
-          if [[ -z "$XCODE_PATH" ]]; then
-            echo "ERROR: Xcode 26 or newer is not installed."
-            echo "A different macOS runner image is required."
+          xcodebuild -version
+          SDK_VERSION="$(xcrun --sdk iphoneos --show-sdk-version)"
+          echo "iOS SDK version: $SDK_VERSION"
+          if [[ "${SDK_VERSION%%.*}" -lt 27 ]]; then
+            echo "ERROR: iOS 27 SDK or newer is required."
             exit 1
           fi
-
-          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
-
-          xcodebuild -version
-          xcrun --sdk iphoneos --show-sdk-version
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -50,6 +39,53 @@ jobs:
         run: |
           npx cap add ios
           npx cap sync ios
+
+      - name: Configure iOS scene lifecycle (iOS 27 startup crash fix)
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import plistlib
+
+          app = Path('ios/App/App')
+          delegate_path = app / 'AppDelegate.swift'
+          delegate = delegate_path.read_text()
+          if 'class SceneDelegate:' not in delegate:
+              delegate += '''
+
+          // iOS 27 requires a scene-based app lifecycle.
+          // Keeping this class in AppDelegate.swift ensures Xcode compiles it
+          // without modifying the generated project's file references.
+          class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+              var window: UIWindow?
+
+              func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+                  guard let windowScene = scene as? UIWindowScene else { return }
+                  let window = UIWindow(windowScene: windowScene)
+                  window.rootViewController = CAPBridgeViewController()
+                  self.window = window
+                  window.makeKeyAndVisible()
+              }
+          }
+          '''
+              delegate_path.write_text(delegate)
+
+          plist_path = app / 'Info.plist'
+          with plist_path.open('rb') as f:
+              info = plistlib.load(f)
+          info['UIApplicationSceneManifest'] = {
+              'UIApplicationSupportsMultipleScenes': False,
+              'UISceneConfigurations': {
+                  'UIWindowSceneSessionRoleApplication': [{
+                      'UISceneConfigurationName': 'Default Configuration',
+                      'UISceneDelegateClassName': '$(PRODUCT_MODULE_NAME).SceneDelegate'
+                  }]
+              }
+          }
+          with plist_path.open('wb') as f:
+              plistlib.dump(info, f, sort_keys=False)
+          print('Configured scene delegate and UIApplicationSceneManifest')
+          PY
 
       - name: Set minimum supported iOS version to 15.0
         run: |
@@ -100,6 +136,22 @@ jobs:
         run: |
           cd ios/App
           pod install
+
+      - name: Set CocoaPods deployment targets to iOS 15
+        run: |
+          set -euo pipefail
+          ruby <<'RUBY'
+          require 'xcodeproj'
+          project_path = 'ios/App/Pods/Pods.xcodeproj'
+          project = Xcodeproj::Project.open(project_path)
+          project.targets.each do |target|
+            target.build_configurations.each do |config|
+              config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+            end
+          end
+          project.save
+          puts 'All CocoaPods targets set to iOS 15.0'
+          RUBY
 
       - name: Install Apple signing assets
         env:
@@ -172,7 +224,7 @@ jobs:
               config.build_settings['CODE_SIGN_STYLE'] = 'Manual'
               config.build_settings['CODE_SIGN_IDENTITY'] = 'Apple Distribution'
               config.build_settings['PROVISIONING_PROFILE_SPECIFIER'] = ENV.fetch('PROFILE_NAME')
-              config.build_settings['MARKETING_VERSION'] = '1.0.0'
+              config.build_settings['MARKETING_VERSION'] = '1.1.0'
               config.build_settings['CURRENT_PROJECT_VERSION'] = ENV.fetch('GITHUB_RUN_NUMBER')
             end
           end
