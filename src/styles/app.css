@@ -287,3 +287,37 @@ input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manip
 .theme-light .matchingMetalCalculator .fixedBottom .bottomActions button:nth-child(2){background:linear-gradient(135deg,#3b2a0a,#211706);color:#f1bd45}
 .theme-light .matchingMetalCalculator .fixedBottom .bottomActions button:nth-child(3){background:#eeeae3;color:#171b24}
 .theme-light .matchingMetalCalculator .notice{color:#805600}
+
+
+/* Refined three-metal segmented navigation: OR Bullion visual language */
+.metalTabs{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:stretch;gap:4px;margin:12px 15px 16px;padding:5px;
+  background:linear-gradient(160deg,#1b252d,#0b1117);
+  border:1px solid #735927;border-radius:16px;
+  box-shadow:inset 0 1px 0 #ffffff12,0 5px 18px #0005;
+}
+.metalTabs button{
+  position:relative;min-width:0;min-height:49px;padding:10px 4px;
+  border:1px solid transparent;border-radius:11px;
+  background:transparent;color:#d4b77a;font-size:15px;font-weight:750;
+  letter-spacing:.2px;transition:background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.metalTabs button:not(.active):active{background:#29313a;transform:scale(.97)}
+.metalTabs button.active{
+  background:linear-gradient(155deg,#f6d987 0%,#e7b94f 50%,#c58b22 100%);
+  border-color:#eac568;color:#211808;
+  box-shadow:inset 0 1px 0 #fff8,0 3px 9px #0008;
+  text-shadow:0 1px 0 #fff3;
+}
+.metalTabs button:focus-visible{outline:2px solid #f5d57c;outline-offset:2px}
+.theme-light .metalTabs{
+  background:linear-gradient(160deg,#f7f4ed,#eae4d9);
+  border-color:#c9ad72;box-shadow:inset 0 1px 0 #fff,0 3px 12px #3c2e151a;
+}
+.theme-light .metalTabs button:not(.active){color:#72531b}
+.theme-light .metalTabs button.active{color:#241907}
+@media(max-width:380px){
+  .metalTabs{margin-left:10px;margin-right:10px;gap:3px;padding:4px}
+  .metalTabs button{font-size:14px;min-height:45px}
+}
