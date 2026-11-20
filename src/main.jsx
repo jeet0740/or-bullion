@@ -41,9 +41,7 @@ function App(){
   write("GOLD CALCULATION",650,130,49,"#92600a","700","center","Georgia");
   write("R E C E I P T",650,178,26,"#667085");
   rounded(55,250,970,150,24,"#fffaf0","#e5d7b3");
-  const receiptPricePerUnit = Number(goldPrice || 0) / (unit === "gram" ? 31.1034768 : 20);
-  const receiptPriceUnit = unit === "gram" ? "gram" : "DWT";
-  const info=[["Gold Price",money(receiptPricePerUnit)+" / "+receiptPriceUnit],["Payout",payout+"%"],["Weight Unit",unit==="gram"?"GRAMS":"DWT"]];
+  const info=[["Gold Price",money(Number(goldPrice||0))+" / troy oz"],["Payout",payout+"%"],["Weight Unit",unit==="gram"?"GRAMS":"DWT"]];
   info.forEach((item,i)=>{const x=215+i*325;write(item[0],x,300,22,"#667085");write(item[1],x,354,i===0?32:35,"#171b24","700","center","Arial",305)});
   rounded(55,top,970,64,17,"#f6e8c5");
   const cols=[174,415,678,906];
