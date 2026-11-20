@@ -321,3 +321,43 @@ input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manip
   .metalTabs{margin-left:10px;margin-right:10px;gap:3px;padding:4px}
   .metalTabs button{font-size:14px;min-height:45px}
 }
+
+
+/* Concept A: minimal, compact, underlined metal navigation */
+.metalTabs{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;margin:6px 16px 11px;padding:0;
+  background:transparent;border:0;border-radius:0;
+  box-shadow:none;position:relative;
+}
+.metalTabs::after{
+  content:"";position:absolute;bottom:0;left:0;right:0;
+  height:2px;background:#34383c;border-radius:2px;pointer-events:none;
+}
+.metalTabs button{
+  min-width:0;min-height:42px;padding:8px 3px 12px;
+  background:transparent;border:0;border-radius:0;
+  box-shadow:none;color:#e8e8e8;font-size:15px;font-weight:650;
+  letter-spacing:0;position:relative;z-index:1;
+  text-shadow:none;transition:color .15s ease;
+}
+.metalTabs button.active{
+  background:transparent;border:0;border-radius:0;box-shadow:none;
+  color:#efbd49;text-shadow:none;font-weight:800;
+}
+.metalTabs button.active::after{
+  content:"";position:absolute;bottom:0;left:7%;right:7%;
+  height:4px;border-radius:5px;background:#efbd49;
+  box-shadow:0 1px 5px #e6b34444;
+}
+.metalTabs button:not(.active):active{background:transparent;color:#efbd49;transform:none}
+.metalTabs button:focus-visible{outline:2px solid #efbd49;outline-offset:-2px;border-radius:5px}
+.theme-light .metalTabs{background:transparent;border:0;box-shadow:none}
+.theme-light .metalTabs::after{background:#d6d0c4}
+.theme-light .metalTabs button:not(.active){color:#44464a}
+.theme-light .metalTabs button.active{color:#94620b;background:transparent;box-shadow:none}
+.theme-light .metalTabs button.active::after{background:#c48c1b;box-shadow:none}
+@media(max-width:380px){
+  .metalTabs{margin:4px 10px 9px;padding:0;gap:0}
+  .metalTabs button{min-height:39px;font-size:14px;padding:7px 2px 11px}
+}
