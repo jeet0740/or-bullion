@@ -40,6 +40,53 @@ jobs:
           npx cap add ios
           npx cap sync ios
 
+      - name: Configure iOS scene lifecycle (iOS 27 startup crash fix)
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import plistlib
+
+          app = Path('ios/App/App')
+          delegate_path = app / 'AppDelegate.swift'
+          delegate = delegate_path.read_text()
+          if 'class SceneDelegate:' not in delegate:
+              delegate += '''
+
+          // iOS 27 requires a scene-based app lifecycle.
+          // Keeping this class in AppDelegate.swift ensures Xcode compiles it
+          // without modifying the generated project's file references.
+          class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+              var window: UIWindow?
+
+              func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+                  guard let windowScene = scene as? UIWindowScene else { return }
+                  let window = UIWindow(windowScene: windowScene)
+                  window.rootViewController = CAPBridgeViewController()
+                  self.window = window
+                  window.makeKeyAndVisible()
+              }
+          }
+          '''
+              delegate_path.write_text(delegate)
+
+          plist_path = app / 'Info.plist'
+          with plist_path.open('rb') as f:
+              info = plistlib.load(f)
+          info['UIApplicationSceneManifest'] = {
+              'UIApplicationSupportsMultipleScenes': False,
+              'UISceneConfigurations': {
+                  'UIWindowSceneSessionRoleApplication': [{
+                      'UISceneConfigurationName': 'Default Configuration',
+                      'UISceneDelegateClassName': '$(PRODUCT_MODULE_NAME).SceneDelegate'
+                  }]
+              }
+          }
+          with plist_path.open('wb') as f:
+              plistlib.dump(info, f, sort_keys=False)
+          print('Configured scene delegate and UIApplicationSceneManifest')
+          PY
+
       - name: Set minimum supported iOS version to 15.0
         run: |
           set -euo pipefail
