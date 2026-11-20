@@ -22,7 +22,7 @@ export default function PlatinumCalculator({onMenu}) {
     try {
       const result = await fetchLivePlatinumPrice();
       setSpot(result.price);
-      setPrice(old => old === "" ? String(result.price) : old);
+      
       setQuoteStatus("live");
     } catch {
       setQuoteStatus("error");
@@ -70,7 +70,7 @@ export default function PlatinumCalculator({onMenu}) {
       } else { await navigator.clipboard.writeText(content); setNotice("Calculation copied for sharing"); }
     } catch (e) { if (e?.name !== "AbortError") setNotice("Unable to share calculation"); }
   };
-  const reset = () => { setWeights({}); setUnit("dwt"); setPayout(""); setPrice(spot == null ? "" : String(spot)); setNotice(""); };
+  const reset = () => { setWeights({}); setUnit("dwt"); setPayout(""); setPrice(""); setNotice(""); };
   return <div className="matchingMetalCalculator">
     <section className="compactHeader metalQuoteHeader"><button className="menuTrigger" type="button" aria-label="Open menu" onClick={onMenu}>☰</button><img className="squareLogo" src="/images/app-icon.png" alt="OR Bullion USA"/>
       <section className="liveSpot" aria-live="polite">
