@@ -132,7 +132,7 @@ function App(){
   <div className="bottomActions"><button onClick={copy} disabled={!active.length}>▣ <span>Copy</span></button><button onClick={shareReceipt} disabled={!active.length}>▤ <span>Share Receipt</span></button><button onClick={reset}>↻ <span>Reset</span></button></div>
   </div>
 
-</>}  </>}
+</>}
   {menuOpen&&<div className="menuOverlay" onClick={()=>setMenuOpen(false)}><nav className="sideMenu" aria-label="App menu" onClick={e=>e.stopPropagation()}><div className="menuHeading"><img src="/images/app-icon.png" alt="OR Bullion USA" /><button aria-label="Close menu" onClick={()=>setMenuOpen(false)}>×</button></div><button className="menuActive" onClick={()=>navigate("calculator")}>▦ &nbsp; Calculator</button><div className="themeSwitchRow"><span>{theme==="dark"?"☾":"☀"} &nbsp; {theme==="dark"?"Dark Mode":"Light Mode"}</span><button type="button" role="switch" aria-label="Toggle dark and light mode" aria-checked={theme==="light"} className={"themeSwitch "+(theme==="light"?"enabled":"")} onClick={()=>setTheme(t=>t==="dark"?"light":"dark")}><span className="themeSwitchThumb"/></button></div><div className="menuDivider"/><button onClick={()=>navigate("about")}>ⓘ &nbsp; About</button><button onClick={()=>navigate("help")}>ⓘ &nbsp; How to Use</button><div className="menuDivider"/><button onClick={()=>navigate("contact")}>✉ &nbsp; Contact Us</button><button onClick={()=>navigate("privacy")}>♢ &nbsp; Privacy Policy</button><button onClick={()=>navigate("terms")}>▤ &nbsp; Terms of Use</button></nav></div>}
   {notice&&<div className="notice">{notice}</div>}
  </main>
