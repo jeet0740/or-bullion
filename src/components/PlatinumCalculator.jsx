@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Capacitor } from "@capacitor/core";
-import { Filesystem, Directory } from "@capacitor/filesystem";
-import { Share } from "@capacitor/share";
+import { shareMetalReceipt } from "../services/metalReceipt.js";
 import { money } from "../calculations/gold.js";
 import { PLATINUM_PURITIES, platinumUnitPrice, platinumRowTotal } from "../calculations/platinum.js";
 import { fetchLivePlatinumPrice } from "../services/platinumPrice.js";
@@ -59,16 +57,15 @@ export default function PlatinumCalculator({onMenu}) {
     catch { setNotice("Unable to copy calculation"); }
   };
   const share = async () => {
+    if (!active.length) { setNotice("Enter a weight first"); return; }
     try {
-      const content = receipt();
-      if (Capacitor.isNativePlatform()) {
-        const data = btoa(unescape(encodeURIComponent(content)));
-        const saved = await Filesystem.writeFile({path:"OR-Bullion-Platinum-"+Date.now()+".txt",data,directory:Directory.Cache});
-        await Share.share({title:"OR Bullion USA Platinum Calculation",url:saved.uri});
-      } else if (navigator.share) {
-        await navigator.share({title:"OR Bullion USA Platinum Calculation",text:content});
-      } else { await navigator.clipboard.writeText(content); setNotice("Calculation copied for sharing"); }
-    } catch (e) { if (e?.name !== "AbortError") setNotice("Unable to share calculation"); }
+      await shareMetalReceipt({metal:"Platinum",price,payout,unitLabel,rows:active,totalWeight,totalValue});
+      setNotice("Receipt ready to share");
+    } catch(e) {
+      if(e?.name==="AbortError"||String(e?.message||"").toLowerCase().includes("cancel")){setNotice("Share cancelled");return;}
+      console.error("Platinum receipt sharing failed",e);
+      setNotice("Could not share receipt: "+String(e?.message||e).slice(0,100));
+    }
   };
   const reset = () => { setWeights({}); setUnit("dwt"); setPayout(""); setPrice(""); setNotice(""); };
   return <div className="matchingMetalCalculator">
