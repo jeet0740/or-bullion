@@ -1,6 +1,6 @@
 export const SILVER_PURITIES = [
   { id: "800", label: "800", purity: 0.8 },
-  { id: "900", label: "900", purity: 0.9 },
+  { id: "900", label: "90%", purity: 0.9 },
   { id: "sterling", label: "Sterling", purity: 0.925 },
   { id: "pure", label: "Pure", purity: 0.999 },
 ];
