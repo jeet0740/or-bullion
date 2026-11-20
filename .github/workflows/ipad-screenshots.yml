@@ -40,7 +40,7 @@ jobs:
       - name: Capture actual app UI at iPad 13-inch screenshot dimensions
         run: |
           mkdir -p ipad-screenshots
-          cat > /tmp/capture-ipad.mjs <<'JS'
+          cat > capture-ipad.mjs <<'JS'
           import { chromium } from 'playwright';
           const browser = await chromium.launch({ headless: true });
           const page = await browser.newPage({
@@ -61,7 +61,7 @@ jobs:
           }
           await browser.close();
           JS
-          node /tmp/capture-ipad.mjs
+          node capture-ipad.mjs
 
       - name: Validate PNG screenshot dimensions
         run: |
