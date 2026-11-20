@@ -4,7 +4,7 @@ export const SILVER_PURITIES = [
   { id: "sterling", label: "Sterling", purity: 0.925 },
   { id: "pure", label: "Pure", purity: 0.999 },
 ];
-export const SILVER_DEFAULT_PAYOUT = 93;
+export const SILVER_DEFAULT_PAYOUT = "";
 export const SILVER_UNITS = ["oz", "gram", "dwt"];
 export const TROY_OUNCE_GRAMS = 31.1034768;
 export function silverOunces(weight, unit) {
