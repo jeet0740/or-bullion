@@ -216,3 +216,6 @@ input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manip
 .theme-light .themeSwitchRow{color:#f5f5f4}
 .contactDetails a{color:#e6b644;text-decoration:underline;text-underline-offset:3px}
 .theme-light .contactDetails a{color:#996500}
+
+/* Gold / Silver navigation for v1.1 */
+.metalTabs{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:12px 16px 14px;padding:3px;border:1px solid #a57e35;border-radius:13px;background:#151719}.metalTabs button{padding:12px;border:0;border-radius:10px;background:transparent;color:#e9c06d;font-weight:800;font-size:17px}.metalTabs button.active{background:linear-gradient(135deg,#e8c77b,#bd8b2d);color:#17120b}.theme-light .metalTabs{background:#eee5d3}.theme-light .metalTabs button:not(.active){color:#654916}
