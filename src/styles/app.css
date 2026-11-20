@@ -238,3 +238,22 @@ input,textarea,select{font-size:16px!important;max-width:100%;touch-action:manip
  .matchingMetalCalculator .metalQuoteHeader .liveSpotLabel{font-size:9px}
  .matchingMetalCalculator .metalQuoteHeader .liveSpotValue{font-size:clamp(15px,4.8vw,22px)}
 }
+
+/* Gold-derived shared controls: remove the empty Platinum toggle slot */
+.matchingMetalCalculator .priceGrid .toggle{display:flex;width:100%;align-items:stretch}
+.matchingMetalCalculator .priceGrid .toggle button{flex:1 1 0;min-width:0}
+.matchingMetalCalculator .priceGrid .toggle button:last-child{margin-right:0}
+.matchingMetalCalculator .priceGrid .unitLine{min-width:0}
+.matchingMetalCalculator .priceGrid .unitLine .toggle{grid-template-columns:none}
+.matchingMetalCalculator .liveSpotSide .quoteTime{font-size:10px;color:#b9c0c6}
+.matchingMetalCalculator .liveSpotSide button.refreshing{opacity:.8;animation:metal-refresh-spin .7s linear infinite}
+@keyframes metal-refresh-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.matchingMetalCalculator .liveSpotSide button.refreshing{animation:none}}
+/* Gold palette, raised selection and tighter proportions for all three tabs */
+.metalTabs{background:#0e151b;border:1px solid #b38a39;border-radius:18px;box-shadow:inset 0 1px 0 #e4b85a24,0 3px 14px #0005;gap:5px;padding:5px;margin:10px 13px 12px}
+.metalTabs button{border-radius:13px;min-height:50px;color:#e7b947;font-size:16px;font-weight:800;letter-spacing:.1px;transition:background .15s ease,box-shadow .15s ease}
+.metalTabs button.active{background:linear-gradient(135deg,#f5d27d 0%,#e2ac37 62%,#c78b1b 100%);color:#17120b;box-shadow:0 2px 8px #0007,inset 0 1px 0 #fff5}
+.metalTabs button:not(.active):active{background:#26313b}
+.metalTabs button:focus-visible{outline:2px solid #f0c458;outline-offset:2px}
+.theme-light .metalTabs{background:#f3ede2;border-color:#b38a39}
+@media(max-width:380px){.metalTabs button{font-size:14px;min-height:46px}.matchingMetalCalculator .liveSpotSide .quoteTime{display:none}}
